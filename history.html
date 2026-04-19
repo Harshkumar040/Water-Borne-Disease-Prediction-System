@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>Prediction History</h3>
+
+<table class="table table-bordered mt-3">
+    <tr>
+        <th>pH</th>
+        <th>Turbidity</th>
+        <th>Temp</th>
+        <th>Quality</th>
+        <th>Disease</th>
+    </tr>
+
+    {% for d in data %}
+    <tr>
+        <td>{{ d.ph }}</td>
+        <td>{{ d.turbidity }}</td>
+        <td>{{ d.temperature }}</td>
+        <td>{{ d.quality }}</td>
+        <td>{{ d.disease }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

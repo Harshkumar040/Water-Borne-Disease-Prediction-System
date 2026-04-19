@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AquaRisk | Waterborne Disease Detection System</title>
+    <style>
+        /* =============== GLOBAL RESET & BASE.CSS STYLES (extended) =============== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #eef9ff 0%, #d9eef7 100%);
+            color: #0a2b2c;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        /* base container similar to base.html block content wrapper */
+        .base-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* header / navbar (common base) */
+        .site-header {
+            background: rgba(10, 55, 55, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(0, 20, 20, 0.1);
+            border: 1px solid rgba(255,255,240,0.3);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .site-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #e0f2fe, #ccfbf1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: #cffafe;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+            padding: 0.4rem 0.8rem;
+            border-radius: 2rem;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,245,0.2);
+            color: white;
+        }
+
+        /* main content block (extends base) */
+        .main-content {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(4px);
+            border-radius: 2rem;
+            padding: 2rem 2rem 2.5rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 32, 32, 0.2);
+            border: 1px solid rgba(255,255,255,0.6);
+            transition: all 0.2s;
+        }
+
+        /* page specific headings */
+        .risk-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .risk-header h2 {
+            font-size: 2.2rem;
+            background: linear-gradient(125deg, #0f4c4a, #0b6b62);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2b6e68;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        /* form card styling (long & modern) */
+        .form-card {
+            max-width: 780px;
+            margin: 1.5rem auto;
+            background: #ffffffdd;
+            padding: 2rem 2rem 2rem 2rem;
+            border-radius: 2rem;
+            box-shadow: 0 12px 28px rgba(0, 33, 33, 0.08);
+            border: 1px solid #e0f2f1;
+        }
+
+        .input-group {
+            margin-bottom: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #115e56;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group label i {
+            font-style: normal;
+            font-size: 1.1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            font-size: 1rem;
+            border: 2px solid #cbdde1;
+            border-radius: 1.6rem;
+            background: white;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: #0a3b38;
+        }
+
+        .input-group input:focus {
+            border-color: #14b89c;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(20, 184, 156, 0.2);
+        }
+
+        .input-group input::placeholder {
+            color: #9bb7b3;
+            font-weight: 400;
+        }
+
+        /* button long & interactive */
+        .risk-btn {
+            background: linear-gradient(105deg, #1f6e65, #0f9488);
+            width: 100%;
+            border: none;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            border-radius: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-top: 0.8rem;
+            box-shadow: 0 6px 14px rgba(15, 110, 100, 0.3);
+        }
+
+        .risk-btn:hover {
+            background: linear-gradient(105deg, #0b5950, #0d7c70);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+
+        .risk-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* result panel - extended info */
+        .result-panel {
+            margin-top: 2rem;
+            background: linear-gradient(115deg, #fef9e8, #f5fefc);
+            border-radius: 1.8rem;
+            padding: 1.8rem;
+            border-left: 8px solid #1e9b8a;
+            transition: 0.2s;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a5e57;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .metric-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: #f0fbf9;
+            padding: 1rem 1.2rem;
+            border-radius: 1.5rem;
+        }
+
+        .metric-item {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #2c7a6e;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f4d46;
+            font-family: monospace;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            background: #ecfdf5;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .category-highlight {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: #d2f0ea;
+            padding: 0.2rem 1rem;
+            border-radius: 2rem;
+            display: inline-block;
+            color: #0c5d54;
+        }
+
+        .risk-details {
+            margin-top: 1.2rem;
+            background: #ffffffb3;
+            padding: 1rem;
+            border-radius: 1.2rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #1e5a55;
+        }
+
+        .alert-note {
+            background: #fff3e0;
+            border-radius: 1rem;
+            padding: 0.8rem 1rem;
+            margin-top: 1rem;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-left: 4px solid #f4a261;
+        }
+
+        hr {
+            margin: 1.5rem 0;
+            border: none;
+            height: 1px;
+            background: linear-gradient(to right, #cce2df, transparent);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #2f756b;
+            padding: 1rem;
+        }
+
+        @media (max-width: 680px) {
+            .base-wrapper {
+                padding: 1rem;
+            }
+            .main-content {
+                padding: 1.2rem;
+            }
+            .risk-header h2 {
+                font-size: 1.6rem;
+            }
+            .metric-value {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* loading simulation / extra long content style */
+        .info-section {
+            margin-top: 2rem;
+            background: #eef7f5;
+            padding: 1.2rem;
+            border-radius: 1.5rem;
+            font-size: 0.85rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            justify-content: space-between;
+        }
+
+        .info-card {
+            flex: 1;
+            background: white;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- BASE.HTML STRUCTURE: extended block container -->
+    <nav class="navbar navbar-expand-lg bg-transparent mt-2">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-hand-holding-water me-2 text-teal"></i> SwasthyaSetu<span style="font-weight: 400;"> </span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ms-auto gap-2">
+        
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="fas fa-microscope me-1"></i>Dashboard
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="#about">
+                <i class="fas fa-info-circle me-1"></i>About
+            </a>
+        </li>
+    
+
+         <li class="nav-item">
+            <a class="nav-link" href="{% url 'disease' %}">
+                <i class="fas fa-info-circle me-1"></i>Disease
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'chat' %}">
+                <i class="fas fa-chart-line me-1"></i>ChatBot
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'alerts' %}">
+                <i class="fas fa-envelope me-1"></i>Alerts
+            </a>
+        </li>
+    </ul>
+</div>
+    </div>
+</nav>
+        </header>
+
+        <!-- main content block (extends base) -->
+        <main class="main-content">
+            <div class="risk-header">
+                <h2>
+                    <span>🦠</span> Disease Risk Detection <span>⚕️</span>
+                </h2>
+                <div class="subhead">Real-time waterborne pathogen & contamination risk assessment</div>
+            </div>
+
+            <!-- prediction form (long style) -->
+            <div class="form-card">
+                <form method="POST" id="riskForm">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <label><i>🧪 pH level</i> (6.5–8.5 ideal)</label>
+                        <input type="number" step="any" name="ph" placeholder="e.g., 7.2, 6.8, 8.1" value="{{ request.POST.ph|default:'' }}" required>
+                    </div>
+                    <div class="input-group">
+                        <label><i>🌊 Turbidity (NTU)</i> (0–5 safe, >5 risk)</label>
+                        <input type="number" step="any" name="turbidity" placeholder="e.g., 2.3, 7.8, 12.4" value="{{ request.POST.turbidity|default:'' }}" required>
+                    </div>
+                    <div class="input-group">
+                        <label><i>🌡️ Temperature (°C)</i> (pathogen proliferation zone)</label>
+                        <input type="number" step="any" name="temperature" placeholder="e.g., 22.5, 31.0, 15.3" value="{{ request.POST.temperature|default:'' }}" required>
+                    </div>
+                    <button type="submit" class="risk-btn">
+                        <span>🔍</span> Analyze & Predict Risk
+                    </button>
+                </form>
+            </div>
+
+            <!-- if result exists: we emulate prediction based on submitted values, extended long output -->
+            {% if result %}
+            <div class="result-panel">
+                <div class="result-title">
+                    <span>📋</span> Prediction Outcome
+                </div>
+                <!-- display entered values summary -->
+                <div class="metric-flex">
+                    <div class="metric-item">
+                        <div class="metric-label">pH value</div>
+                        <div class="metric-value">{{ request.POST.ph|default:"—" }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Turbidity (NTU)</div>
+                        <div class="metric-value">{{ request.POST.turbidity|default:"—" }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Temperature (°C)</div>
+                        <div class="metric-value">{{ request.POST.temperature|default:"—" }}</div>
+                    </div>
+                </div>
+                <div class="risk-badge">
+                    🧬 Risk Index: <strong>{{ result }}</strong>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <span class="category-label" style="font-weight: 600;">📌 Category: </span>
+                    <span class="category-highlight">{{ category }}</span>
+                </div>
+                
+                <!-- dynamic extended analysis based on category (long contextual content) -->
+                <div class="risk-details">
+                    <strong>🔬 Detailed water risk analysis</strong><br>
+                    {% if category == "High Risk" %}
+                        ⚠️ Immediate action required: Elevated probability of waterborne diseases (Cholera, Typhoid, Dysentery). High turbidity combined with improper pH/temp fosters bacterial overgrowth. Boil water before use, implement filtration.
+                    {% elif category == "Moderate Risk" %}
+                        ⚠️ Moderate concern: Monitoring recommended. Periodic contamination possible. Use basic chlorination or UV treatment. Regular testing advised for vulnerable populations.
+                    {% elif category == "Low Risk" %}
+                        ✅ Acceptable water quality: Low likelihood of acute waterborne disease. Standard precautions remain advisable. Maintain sanitary storage.
+                    {% elif category == "Critical Risk" %}
+                        🚨 CRITICAL: Severe pathogenic indicators present. Immediate health advisory. Do not consume untreated water. Seek alternative water sources.
+                    {% else %}
+                        ℹ️ Further assessment needed based on local microbial standards.
+                    {% endif %}
+                </div>
+                
+                <!-- additional guidance / long content -->
+                <div class="alert-note">
+                    <span>💡</span>
+                    <span><strong>WHO Reference:</strong> pH between 6.5-8.5, Turbidity <5 NTU, Temperature 10-25°C lowers microbial risk. Your input suggests {{ category|lower }} scenario.</span>
+                </div>
+            </div>
+            {% else %}
+            <!-- default informational block, longer and educative -->
+            <div style="background: #eef2f0; border-radius: 1.8rem; padding: 1.8rem; margin-top: 0.5rem;">
+                <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 1rem;">
+                    <span>📘</span>
+                    <h3 style="color: #14655b;">Water Quality & Disease Risk Factors</h3>
+                </div>
+                <p style="margin-bottom: 1rem;">The system evaluates three primary parameters to estimate waterborne disease risk: pH imbalance can cause heavy metal leaching, turbidity indicates suspended particles that harbor pathogens, and temperature influences microbial growth (especially Vibrio cholerae, E. coli).</p>
+                <div class="info-section">
+                    <div class="info-card">
+                        <strong>🔄 pH Scale</strong><br>
+                        Acidic (<6.5): corrosion, metal release. Alkaline (>8.5): disinfection inefficiency.
+                    </div>
+                    <div class="info-card">
+                        <strong>🌪️ Turbidity effect</strong><br>
+                        >5 NTU shields pathogens from UV/chlorine. High values linked to gastroenteritis.
+                    </div>
+                    <div class="info-card">
+                        <strong>🔥 Temperature risk</strong><br>
+                        25°C–40°C accelerates bacterial replication. Cooler water reduces risk.
+                    </div>
+                </div>
+                <div class="alert-note" style="background: #ddf4f0; margin-top: 1rem;">
+                    <span>🧪</span> Fill the form above to get an instant AI-driven prediction based on epidemiological models.
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- additional extended content (making it long and informative) -->
+            <hr>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; margin-top: 1rem;">
+                <div style="background: #ffffffba; padding: 1rem; border-radius: 1.2rem; flex:1;">
+                    <span>🚰 <strong>Prevention tips</strong></span><br>
+                    • Boil water for at least 1 minute.<br>
+                    • Use activated carbon + ceramic filters.<br>
+                    • Regular testing for coliform bacteria.
+                </div>
+                <div style="background: #ffffffba; padding: 1rem; border-radius: 1.2rem; flex:1;">
+                    <span>📊 <strong>Surveillance data</strong></span><br>
+                    Over 2 billion people use fecally contaminated water sources globally. Our system aligns with SDG 6.
+                </div>
+            </div>
+        </main>
+        <footer>
+            🌍 AquaRisk · Intelligent water disease prediction | Data-driven public health tool v2.0
+        </footer>
+    </div>
+
+    <!-- optional inline script for better UX + emulating django logic (but purely frontend enhancement, prediction logic preserved via backend) -->
+    <script>
+        (function() {
+            const form = document.getElementById('riskForm');
+            if(form) {
+                form.addEventListener('submit', function(e) {
+                    const phInput = document.querySelector('input[name="ph"]');
+                    const turbInput = document.querySelector('input[name="turbidity"]');
+                    const tempInput = document.querySelector('input[name="temperature"]');
+                    let isValid = true;
+                    if(phInput && (phInput.value.trim() === '' || isNaN(parseFloat(phInput.value)))) {
+                        phInput.style.borderColor = '#e11d48';
+                        isValid = false;
+                    } else if(phInput) phInput.style.borderColor = '#cbdde1';
+                    
+                    if(turbInput && (turbInput.value.trim() === '' || isNaN(parseFloat(turbInput.value)))) {
+                        turbInput.style.borderColor = '#e11d48';
+                        isValid = false;
+                    } else if(turbInput) turbInput.style.borderColor = '#cbdde1';
+                    
+                    if(tempInput && (tempInput.value.trim() === '' || isNaN(parseFloat(tempInput.value)))) {
+                        tempInput.style.borderColor = '#e11d48';
+                        isValid = false;
+                    } else if(tempInput) tempInput.style.borderColor = '#cbdde1';
+                    
+                    if(!isValid) {
+                        e.preventDefault();
+                        alert('⚠️ Please enter valid numeric values for pH, Turbidity, and Temperature.');
+                    }
+                });
+            }
+        })();
+    </script>
+    <!-- additional note: backend must provide 'result' and 'category' variables in context, 
+         but this template fully extends base.html style and makes page long with rich content -->
+</body>
+</html>

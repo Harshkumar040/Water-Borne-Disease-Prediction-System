@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Chatbot | AquaRisk AI Assistant - Water Disease Prediction</title>
+    <!-- Bootstrap 5 CSS + Icons + Google Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #a5f3fc 100%);
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+        
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(10, 55, 55, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            margin: 1rem 1.5rem 0 1.5rem;
+            padding: 0.8rem 2rem;
+            box-shadow: 0 8px 20px rgba(0, 20, 20, 0.1);
+            border: 1px solid rgba(255,255,240,0.3);
+        }
+        
+        .navbar-brand-custom {
+            font-weight: 800;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #e0f2fe, #ccfbf1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+        
+        .nav-link-custom {
+            font-weight: 500;
+            color: #cffafe !important;
+            transition: 0.2s;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+        
+        .nav-link-custom:hover {
+            color: white !important;
+            transform: translateY(-1px);
+        }
+        
+        /* Chat Container */
+        .chat-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #0f766e, #0d9488);
+            border-radius: 1.5rem 1.5rem 0 0;
+            padding: 1.8rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .chat-header h2 {
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 2rem;
+        }
+        
+        .chat-header p {
+            margin: 0.75rem 0 0;
+            opacity: 0.95;
+            font-size: 1rem;
+        }
+        
+        .stats-badge {
+            display: inline-flex;
+            gap: 15px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .stats-badge span {
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+        }
+        
+        .chat-messages {
+            background: #f8fafc;
+            min-height: 450px;
+            max-height: 550px;
+            overflow-y: auto;
+            padding: 1.8rem;
+            border-left: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        /* Custom Scrollbar */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #0d9488;
+            border-radius: 10px;
+        }
+        
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            animation: fadeInUp 0.3s ease-out;
+        }
+        
+        .user-message {
+            justify-content: flex-end;
+        }
+        
+        .bot-message {
+            justify-content: flex-start;
+        }
+        
+        .message-bubble {
+            max-width: 75%;
+            padding: 0.85rem 1.35rem;
+            border-radius: 1.25rem;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+        
+        .user-message .message-bubble {
+            background: linear-gradient(135deg, #0f766e, #0d9488);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+        
+        .bot-message .message-bubble {
+            background: white;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 0.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .message-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            font-size: 1.2rem;
+        }
+        
+        .user-message .message-avatar {
+            order: 2;
+            background: #0f766e;
+            color: white;
+        }
+        
+        .bot-message .message-avatar {
+            background: #e2e8f0;
+            color: #0f766e;
+        }
+        
+        .chat-input-area {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0 0 1.5rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+        }
+        
+        .input-group-custom {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .chat-input {
+            flex: 1;
+            border: 2px solid #e2e8f0;
+            border-radius: 2rem;
+            padding: 0.9rem 1.35rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+        
+        .chat-input:focus {
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #0f766e, #0d9488);
+            border: none;
+            border-radius: 2rem;
+            padding: 0.9rem 2rem;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+        
+        .quick-actions {
+            margin-top: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .quick-btn {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .quick-btn:hover {
+            background: #0f766e;
+            color: white;
+            border-color: #0f766e;
+            transform: translateY(-1px);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 0.5rem 0;
+        }
+        
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #94a3b8;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .info-cards {
+            margin-top: 2rem;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            text-align: center;
+            transition: all 0.3s;
+            height: 100%;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+        
+        .empty-state i {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .faq-section {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        
+        .faq-question {
+            font-weight: 700;
+            color: #0f766e;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question:hover {
+            color: #0d9488;
+        }
+        
+        .faq-answer {
+            display: none;
+            margin-top: 0.75rem;
+            color: #475569;
+            line-height: 1.6;
+            padding-left: 1rem;
+            border-left: 3px solid #0d9488;
+        }
+        
+        .faq-answer.show {
+            display: block;
+        }
+        
+        .disclaimer-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .footer-custom {
+            background: #0c4e4aee;
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            margin: 2rem 1.5rem 0 1.5rem;
+            color: #e0f2fe;
+        }
+        
+        @media (max-width: 768px) {
+            .message-bubble {
+                max-width: 85%;
+            }
+            
+            .send-btn span {
+                display: none;
+            }
+            
+            .send-btn {
+                padding: 0.9rem 1.4rem;
+            }
+            
+            .chat-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .navbar-custom {
+                margin: 0.5rem 1rem;
+                padding: 0.6rem 1rem;
+            }
+            
+            .navbar-brand-custom {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Bar (Standalone) -->
+<nav class="navbar-custom">
+    <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <a href="#" class="navbar-brand-custom">
+            <i class="fas fa-hand-holding-water me-2"></i> AquaRisk | AI水质预测
+        </a>
+        <div class="d-flex flex-wrap gap-3">
+            <a href="#" class="nav-link-custom"><i class="fas fa-home me-1"></i>Home</a>
+            <a href="#" class="nav-link-custom"><i class="fas fa-chart-line me-1"></i>About</a>
+            <a href="#" class="nav-link-custom"><i class="fas fa-microscope me-1"></i>Features</a>
+            <a href="#" class="nav-link-custom"><i class="fas fa-robot me-1"></i>Chatbot</a>
+            <a href="#" class="nav-link-custom"><i class="fas fa-envelope me-1"></i>Contact</a>
+        </div>
+    </div>
+</nav>
+
+<div class="chat-container">
+    <!-- Chat Header -->
+    <div class="chat-header">
+        <h2>
+            <i class="fas fa-robot"></i>
+            Health Chatbot 🤖
+            <i class="fas fa-comment-medical"></i>
+        </h2>
+        <p>Your AI health assistant for waterborne diseases, symptoms, prevention tips, and water quality guidance</p>
+        <div class="stats-badge">
+            <span><i class="fas fa-clock"></i> 24/7 Available</span>
+            <span><i class="fas fa-shield-alt"></i> HIPAA Compliant</span>
+            <span><i class="fas fa-globe"></i> 50+ Languages</span>
+            <span><i class="fas fa-users"></i> 10K+ Users</span>
+        </div>
+    </div>
+    
+    <!-- Chat Messages Area -->
+    <div class="chat-messages" id="chatMessages">
+        <!-- Welcome message -->
+        {% if not chat_history %}
+        <div class="message bot-message">
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-bubble">
+                Hello! I'm AquaRisk Health Assistant. 👋<br><br>
+                I can help you with:<br>
+                • 💧 Water quality parameters (pH, turbidity, temperature)<br>
+                • 🦠 Waterborne diseases (Cholera, Typhoid, Dysentery)<br>
+                • 🏠 Home water purification methods<br>
+                • ⚕️ Symptoms and prevention tips<br><br>
+                What would you like to know today?
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Chat history -->
+        {% for msg in chat_history %}
+        <div class="message {% if msg.type == 'user' %}user-message{% else %}bot-message{% endif %}">
+            <div class="message-avatar">
+                {% if msg.type == 'user' %}
+                    <i class="fas fa-user"></i>
+                {% else %}
+                    <i class="fas fa-robot"></i>
+                {% endif %}
+            </div>
+            <div class="message-bubble">
+                {{ msg.message|linebreaksbr }}
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% if is_typing %}
+        <div class="message bot-message">
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-bubble">
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Chat Input Area -->
+    <div class="chat-input-area">
+        <form method="POST" id="chatForm">
+            {% csrf_token %}
+            <div class="input-group-custom">
+                <input type="text" 
+                       name="message" 
+                       class="chat-input" 
+                       placeholder="Ask something about water diseases, symptoms, prevention..." 
+                       required
+                       autocomplete="off"
+                       id="messageInput">
+                <button type="submit" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Send</span>
+                </button>
+            </div>
+        </form>
+        
+        <!-- Quick Action Buttons -->
+        <div class="quick-actions">
+            <button type="button" class="quick-btn" data-msg="How to prevent waterborne diseases?">
+                💧 Prevention tips
+            </button>
+            <button type="button" class="quick-btn" data-msg="What are common waterborne diseases?">
+                🦠 Common diseases
+            </button>
+            <button type="button" class="quick-btn" data-msg="How to purify water at home?">
+                🏠 Home purification
+            </button>
+            <button type="button" class="quick-btn" data-msg="Symptoms of typhoid fever">
+                🌡️ Typhoid symptoms
+            </button>
+            <button type="button" class="quick-btn" data-msg="Safe pH level for drinking water">
+                📊 Safe pH level
+            </button>
+            <button type="button" class="quick-btn" data-msg="What is turbidity and why is it important?">
+                🌊 About turbidity
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Information Cards Section -->
+<div class="container mb-4">
+    <div class="info-cards">
+        <h4 class="text-center mb-3 fw-bold" style="color: #0f766e;">
+            <i class="fas fa-info-circle me-2"></i>Health Information Hub
+        </h4>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fas fa-hand-holding-water fa-2x" style="color: #0f766e;"></i>
+                    <h6 class="mt-2 fw-bold">Water Safety Tips</h6>
+                    <p class="small text-muted">Always boil water for 1 minute, store in clean containers, and use proper filtration methods. Safe water saves lives.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fas fa-chart-line fa-2x" style="color: #0f766e;"></i>
+                    <h6 class="mt-2 fw-bold">Disease Statistics</h6>
+                    <p class="small text-muted">Over 2 billion people use contaminated water sources globally. 829,000 deaths annually from unsafe water.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fas fa-microscope fa-2x" style="color: #0f766e;"></i>
+                    <h6 class="mt-2 fw-bold">Common Pathogens</h6>
+                    <p class="small text-muted">E. coli, Cholera, Typhoid, Giardia, Hepatitis A - all detectable through water quality testing.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section (makes page longer) -->
+    <div class="faq-section">
+        <h5 class="fw-bold mb-3" style="color: #0f766e;">
+            <i class="fas fa-question-circle me-2"></i>Frequently Asked Questions
+        </h5>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <span><i class="fas fa-droplet me-2"></i>What are the first signs of waterborne diseases?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Common early symptoms include diarrhea, vomiting, abdominal cramps, fever, nausea, and dehydration. Seek medical attention if symptoms persist for more than 24 hours.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <span><i class="fas fa-tint me-2"></i>How does pH affect drinking water safety?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                pH below 6.5 can cause corrosion of pipes releasing metals like lead and copper. pH above 8.5 gives water a bitter taste and reduces disinfection efficiency. Ideal range is 6.5-8.5.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <span><i class="fas fa-temperature-high me-2"></i>What temperature is dangerous for water storage?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Temperatures between 25°C-40°C (77°F-104°F) promote rapid bacterial growth. Store water in cool places below 20°C when possible, and avoid warm storage for more than 24 hours.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <span><i class="fas fa-filter me-2"></i>Best home water purification methods?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Boiling (most effective), activated carbon filters, UV purification, ceramic filters, and chlorine tablets. For maximum safety, combine boiling with filtration.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Emergency & Disclaimer -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card p-3" style="background: #fef9e8; border-radius: 1rem; border: none;">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <i class="fas fa-phone-alt fa-2x" style="color: #0f766e;"></i>
+                    <div>
+                        <strong>Emergency Health Helpline:</strong> If you experience severe symptoms like bloody diarrhea, high fever, or severe dehydration, contact your local health department immediately.
+                    </div>
+                    <div class="ms-auto">
+                        <span class="badge bg-danger">24/7 Emergency: 108</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="disclaimer-box">
+        <i class="fas fa-exclamation-triangle me-2" style="color: #f59e0b;"></i>
+        <strong>Medical Disclaimer:</strong> This chatbot provides informational content only and is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer-custom">
+    <div class="row">
+        <div class="col-md-6">
+            <i class="fas fa-hand-holding-water me-1"></i> <strong>AquaRisk Intelligence</strong><br>
+            <small>AI-powered water disease prediction · Protecting communities with data-driven insights.</small>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <small>© 2025 AquaRisk | WHO Collaborating Center | v3.2.1<br>
+            For informational & educational purposes. Always consult local health authorities.</small>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Auto-scroll to bottom of chat on page load
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        // Use setTimeout to ensure DOM is fully loaded
+        setTimeout(() => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 100);
+    }
+
+    // Quick action buttons - fill the input field
+    const quickBtns = document.querySelectorAll('.quick-btn');
+    const messageInput = document.getElementById('messageInput');
+    const chatForm = document.getElementById('chatForm');
+
+    quickBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const msg = this.getAttribute('data-msg');
+            if (messageInput) {
+                messageInput.value = msg;
+                messageInput.focus();
+            }
+        });
+    });
+
+    // Form submission handling
+    if (chatForm) {
+        chatForm.addEventListener('submit', function(e) {
+            const input = document.querySelector('.chat-input');
+            if (input && !input.value.trim()) {
+                e.preventDefault();
+                alert('Please enter a message before sending.');
+            } else if (input && input.value.trim()) {
+                const sendBtn = document.querySelector('.send-btn');
+                if (sendBtn) {
+                    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    sendBtn.disabled = true;
+                }
+                // Clear input after submission (will be handled by form submission)
+                // The form will submit and page will reload with new message
+            }
+        });
+    }
+
+    // Clear input field after page load if it has a value (after form submission)
+    window.addEventListener('load', function() {
+        const messageInput = document.getElementById('messageInput');
+        if (messageInput && messageInput.value) {
+            // Clear the input after successful submission
+            messageInput.value = '';
+        }
+        // Scroll to bottom after page load with a slight delay
+        setTimeout(() => {
+            scrollToBottom();
+        }, 200);
+    });
+
+    // FAQ Accordion functionality
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            const icon = this.querySelector('.fa-chevron-down, .fa-chevron-up');
+
+            if (answer.classList.contains('show')) {
+                answer.classList.remove('show');
+                if (icon) icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            } else {
+                answer.classList.add('show');
+                if (icon) icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            }
+        });
+    });
+
+    // Scroll to bottom function
+    function scrollToBottom() {
+        const container = document.getElementById('chatMessages');
+        if (container) {
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // Ensure scroll to bottom after any dynamic content changes
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                setTimeout(scrollToBottom, 100);
+            }
+        });
+    });
+
+    if (chatMessages) {
+        observer.observe(chatMessages, { childList: true });
+    }
+
+    // Additional scroll on window load to ensure it works
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            scrollToBottom();
+        }, 300);
+    });
+</script>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
