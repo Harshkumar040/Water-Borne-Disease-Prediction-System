@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AquaRisk - Water Disease Detection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #a5f3fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-custom {
+            background: rgba(10, 55, 55, 0.88);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            margin: 1rem 1.5rem 0 1.5rem;
+            padding: 0.8rem 2rem;
+            box-shadow: 0 8px 20px rgba(0,20,20,0.12);
+            border: 1px solid rgba(255,255,240,0.25);
+        }
+        .navbar-brand-custom {
+            font-weight: 800;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #e0f2fe, #ccfbf1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+        .nav-link-custom {
+            font-weight: 500;
+            color: #cffafe !important;
+            transition: 0.2s;
+            text-decoration: none;
+            margin: 0 0.4rem;
+        }
+        .nav-link-custom:hover { color: #fff !important; transform: translateY(-1px); }
+        .auth-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .auth-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: 2rem;
+            box-shadow: 0 24px 48px -12px rgba(0,40,40,0.18);
+            border: 1px solid rgba(255,255,255,0.8);
+            width: 100%;
+            max-width: 460px;
+            overflow: hidden;
+        }
+        .auth-header {
+            background: linear-gradient(135deg, #0f766e, #0d9488);
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+            color: white;
+        }
+        .auth-header .icon-circle {
+            width: 70px; height: 70px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.8rem;
+            border: 2px solid rgba(255,255,255,0.35);
+        }
+        .auth-header h2 { font-weight: 800; font-size: 1.7rem; margin-bottom: 0.3rem; }
+        .auth-header p { font-size: 0.95rem; opacity: 0.85; margin: 0; }
+        .auth-body { padding: 2rem; }
+        .form-label { font-weight: 600; font-size: 0.9rem; color: #1e4a4e; margin-bottom: 0.4rem; }
+        .form-control {
+            border-radius: 0.9rem;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.75rem 1rem 0.75rem 2.8rem;
+            font-weight: 500; font-size: 0.95rem;
+            transition: all 0.2s;
+            background: #f8faff;
+        }
+        .form-control:focus {
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 3px rgba(20,184,166,0.18);
+            background: #fff;
+        }
+        .input-wrapper { position: relative; margin-bottom: 1.2rem; }
+        .input-icon {
+            position: absolute; left: 0.9rem; top: 50%;
+            transform: translateY(-50%);
+            color: #64748b; font-size: 0.95rem; pointer-events: none;
+        }
+        .toggle-pw {
+            position: absolute; right: 0.9rem; top: 50%;
+            transform: translateY(-50%);
+            color: #64748b; cursor: pointer; font-size: 0.95rem;
+            background: none; border: none; padding: 0;
+        }
+        .toggle-pw:hover { color: #0d9488; }
+        .btn-auth {
+            background: linear-gradient(105deg, #0f766e, #0d9488);
+            border: none; border-radius: 1.5rem;
+            padding: 0.85rem; font-weight: 700; font-size: 1rem;
+            color: white; width: 100%;
+            transition: all 0.25s;
+            box-shadow: 0 6px 14px rgba(13,148,136,0.3);
+        }
+        .btn-auth:hover {
+            background: linear-gradient(105deg, #0b5e56, #0c7e72);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(13,148,136,0.38);
+            color: white;
+        }
+        .divider {
+            display: flex; align-items: center; gap: 0.8rem;
+            margin: 1.4rem 0; color: #94a3b8; font-size: 0.85rem;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: #e2e8f0;
+        }
+        .auth-footer-text { text-align: center; font-size: 0.9rem; color: #64748b; margin-top: 1.2rem; }
+        .auth-footer-text a { color: #0d9488; font-weight: 600; text-decoration: none; }
+        .auth-footer-text a:hover { text-decoration: underline; }
+        .alert-custom { border-radius: 0.9rem; font-size: 0.9rem; border: none; padding: 0.75rem 1rem; margin-bottom: 1.2rem; }
+        footer { background: rgba(10,55,55,0.85); color: rgba(255,255,255,0.8); text-align: center; padding: 1rem; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand-custom" href="/">💧 AquaRisk</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <i class="fas fa-bars" style="color:#cffafe;"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+                <li class="nav-item"><a class="nav-link-custom" href="/"><i class="fas fa-home me-1"></i>Home</a></li>
+                <li class="nav-item"><a class="nav-link-custom" href="/register/"><i class="fas fa-user-plus me-1"></i>Register</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="icon-circle">💧</div>
+            <h2>Welcome Back</h2>
+            <p>Sign in to your AquaRisk account</p>
+        </div>
+        <div class="auth-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-custom alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="/login/">
+                {% csrf_token %}
+                <div class="mb-1">
+                    <label class="form-label"><i class="fas fa-user me-1" style="color:#0d9488;"></i>Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" class="form-control" name="username" placeholder="Enter your username" required autocomplete="username">
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <label class="form-label"><i class="fas fa-lock me-1" style="color:#0d9488;"></i>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" name="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
+                        <button type="button" class="toggle-pw" onclick="togglePw('loginPassword', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3" style="font-size:0.88rem;">
+                    <label class="d-flex align-items-center gap-1" style="cursor:pointer; color:#64748b;">
+                        <input type="checkbox" name="remember" style="accent-color:#0d9488;"> Remember me
+                    </label>
+                    <a href="#" style="color:#0d9488; text-decoration:none; font-weight:600;">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn btn-auth">
+                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                </button>
+            </form>
+
+            <div class="divider">or</div>
+            <div class="auth-footer-text">
+                Don't have an account? <a href="/register/">Create one now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 AquaRisk — Water Disease Detection System | Built with Django + ML 🚀</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function togglePw(id, btn) {
+        const inp = document.getElementById(id);
+        const icon = btn.querySelector('i');
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            icon.className = 'fas fa-eye-slash';
+        } else {
+            inp.type = 'password';
+            icon.className = 'fas fa-eye';
+        }
+    }
+</script>
+</body>
+</html>

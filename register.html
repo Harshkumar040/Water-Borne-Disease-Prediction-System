@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | AquaRisk - Water Disease Detection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #a5f3fc 100%);
+            min-height: 100vh; display: flex; flex-direction: column;
+        }
+        .navbar-custom {
+            background: rgba(10, 55, 55, 0.88);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            margin: 1rem 1.5rem 0 1.5rem;
+            padding: 0.8rem 2rem;
+            box-shadow: 0 8px 20px rgba(0,20,20,0.12);
+            border: 1px solid rgba(255,255,240,0.25);
+        }
+        .navbar-brand-custom {
+            font-weight: 800; font-size: 1.6rem;
+            background: linear-gradient(135deg, #e0f2fe, #ccfbf1);
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; text-decoration: none;
+        }
+        .nav-link-custom { font-weight: 500; color: #cffafe !important; transition: 0.2s; text-decoration: none; margin: 0 0.4rem; }
+        .nav-link-custom:hover { color: #fff !important; transform: translateY(-1px); }
+        .auth-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+        .auth-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: 2rem;
+            box-shadow: 0 24px 48px -12px rgba(0,40,40,0.18);
+            border: 1px solid rgba(255,255,255,0.8);
+            width: 100%; max-width: 500px; overflow: hidden;
+        }
+        .auth-header {
+            background: linear-gradient(135deg, #0f766e, #0891b2);
+            padding: 2.5rem 2rem 2rem; text-align: center; color: white;
+        }
+        .auth-header .icon-circle {
+            width: 70px; height: 70px; background: rgba(255,255,255,0.2);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1rem; font-size: 1.8rem;
+            border: 2px solid rgba(255,255,255,0.35);
+        }
+        .auth-header h2 { font-weight: 800; font-size: 1.7rem; margin-bottom: 0.3rem; }
+        .auth-header p { font-size: 0.95rem; opacity: 0.85; margin: 0; }
+        .auth-body { padding: 2rem; }
+        .form-label { font-weight: 600; font-size: 0.88rem; color: #1e4a4e; margin-bottom: 0.35rem; }
+        .form-control {
+            border-radius: 0.9rem; border: 1.5px solid #cbd5e1;
+            padding: 0.72rem 1rem 0.72rem 2.8rem;
+            font-weight: 500; font-size: 0.93rem; transition: all 0.2s; background: #f8faff;
+        }
+        .form-control:focus { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20,184,166,0.18); background: #fff; }
+        .input-wrapper { position: relative; margin-bottom: 1rem; }
+        .input-icon { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 0.9rem; pointer-events: none; }
+        .toggle-pw { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); color: #64748b; cursor: pointer; font-size: 0.9rem; background: none; border: none; padding: 0; }
+        .toggle-pw:hover { color: #0d9488; }
+        .strength-bar { height: 5px; border-radius: 3px; background: #e2e8f0; margin-top: 0.5rem; overflow: hidden; }
+        .strength-fill { height: 100%; border-radius: 3px; transition: width 0.3s, background 0.3s; width: 0%; }
+        .strength-label { font-size: 0.76rem; margin-top: 0.25rem; font-weight: 600; }
+        .btn-auth {
+            background: linear-gradient(105deg, #0f766e, #0891b2);
+            border: none; border-radius: 1.5rem; padding: 0.85rem;
+            font-weight: 700; font-size: 1rem; color: white; width: 100%;
+            transition: all 0.25s; box-shadow: 0 6px 14px rgba(8,145,178,0.3);
+        }
+        .btn-auth:hover { background: linear-gradient(105deg, #0b5e56, #0773a0); transform: translateY(-1px); color: white; }
+        .auth-footer-text { text-align: center; font-size: 0.9rem; color: #64748b; margin-top: 1.2rem; }
+        .auth-footer-text a { color: #0d9488; font-weight: 600; text-decoration: none; }
+        .auth-footer-text a:hover { text-decoration: underline; }
+        footer { background: rgba(10,55,55,0.85); color: rgba(255,255,255,0.8); text-align: center; padding: 1rem; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand-custom" href="/">💧 AquaRisk</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <i class="fas fa-bars" style="color:#cffafe;"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+                <li class="nav-item"><a class="nav-link-custom" href="/"><i class="fas fa-home me-1"></i>Home</a></li>
+                <li class="nav-item"><a class="nav-link-custom" href="/login/"><i class="fas fa-sign-in-alt me-1"></i>Login</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="icon-circle">🌊</div>
+            <h2>Create Account</h2>
+            <p>Join AquaRisk to monitor water safety</p>
+        </div>
+        <div class="auth-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" style="border-radius:0.9rem; border:none; font-size:0.9rem;" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="/register/" id="registerForm">
+                {% csrf_token %}
+                <div class="row g-2 mb-0">
+                    <div class="col-6">
+                        <label class="form-label"><i class="fas fa-id-card me-1" style="color:#0891b2;"></i>First Name</label>
+                        <div class="input-wrapper" style="margin-bottom:0;">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" name="first_name" placeholder="First name" required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Last Name</label>
+                        <div class="input-wrapper" style="margin-bottom:0;">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" name="last_name" placeholder="Last name">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-0 mt-3">
+                    <label class="form-label"><i class="fas fa-at me-1" style="color:#0891b2;"></i>Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user-circle input-icon"></i>
+                        <input type="text" class="form-control" name="username" placeholder="Choose a username" required minlength="3">
+                    </div>
+                </div>
+                <div class="mb-0">
+                    <label class="form-label"><i class="fas fa-envelope me-1" style="color:#0891b2;"></i>Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" class="form-control" name="email" placeholder="you@example.com" required>
+                    </div>
+                </div>
+                <div class="mb-0">
+                    <label class="form-label"><i class="fas fa-lock me-1" style="color:#0891b2;"></i>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" name="password1" id="pw1" placeholder="Create a strong password" required minlength="8" oninput="checkStrength(this.value)">
+                        <button type="button" class="toggle-pw" onclick="togglePw('pw1', this)"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                    <div class="strength-label" id="strengthLabel" style="color:#94a3b8;"></div>
+                </div>
+                <div class="mb-2 mt-3">
+                    <label class="form-label"><i class="fas fa-shield-alt me-1" style="color:#0891b2;"></i>Confirm Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" name="password2" id="pw2" placeholder="Repeat your password" required>
+                        <button type="button" class="toggle-pw" onclick="togglePw('pw2', this)"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div id="pwMatchMsg" style="font-size:0.78rem; margin-top:0.2rem; padding-left:0.3rem;"></div>
+                </div>
+                <button type="submit" class="btn btn-auth mt-1">
+                    <i class="fas fa-user-plus me-2"></i>Create Account
+                </button>
+            </form>
+            <div class="auth-footer-text">
+                Already have an account? <a href="/login/">Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 AquaRisk — Water Disease Detection System | Built with Django + ML 🚀</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function togglePw(id, btn) {
+        const inp = document.getElementById(id);
+        const icon = btn.querySelector('i');
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+        icon.className = inp.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+    }
+    function checkStrength(val) {
+        const fill = document.getElementById('strengthFill');
+        const label = document.getElementById('strengthLabel');
+        let score = 0;
+        if (val.length >= 8) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+        const levels = [
+            { w:'0%',   bg:'#e2e8f0', txt:'' },
+            { w:'25%',  bg:'#ef4444', txt:'Weak' },
+            { w:'50%',  bg:'#f59e0b', txt:'Fair' },
+            { w:'75%',  bg:'#3b82f6', txt:'Good' },
+            { w:'100%', bg:'#10b981', txt:'Strong' },
+        ];
+        const l = levels[score];
+        fill.style.width = l.w; fill.style.background = l.bg;
+        label.textContent = l.txt; label.style.color = l.bg;
+    }
+    document.getElementById('pw2').addEventListener('input', function() {
+        const msg = document.getElementById('pwMatchMsg');
+        if (this.value === document.getElementById('pw1').value) {
+            msg.innerHTML = '<span style="color:#10b981;"><i class="fas fa-check-circle me-1"></i>Passwords match</span>';
+        } else {
+            msg.innerHTML = '<span style="color:#ef4444;"><i class="fas fa-times-circle me-1"></i>Passwords do not match</span>';
+        }
+    });
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        if (document.getElementById('pw1').value !== document.getElementById('pw2').value) {
+            e.preventDefault();
+            document.getElementById('pwMatchMsg').innerHTML = '<span style="color:#ef4444;">Passwords do not match.</span>';
+        }
+    });
+</script>
+</body>
+</html>

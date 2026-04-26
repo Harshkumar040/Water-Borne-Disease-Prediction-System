@@ -1,27 +1,262 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block title %}Prediction History | AquaRisk{% endblock %}
+
+{% block extra_css %}
+.history-header {
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    text-align: center;
+}
+.history-header h2 { font-size: 2rem; font-weight: 700; margin: 0; }
+.history-header p { opacity: 0.9; margin: 0.5rem 0 0; }
+.stats-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+.mini-stat {
+    flex: 1;
+    background: white;
+    border-radius: 1.2rem;
+    padding: 1.2rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    min-width: 130px;
+}
+.mini-stat .val { font-size: 2rem; font-weight: 800; color: #0f766e; }
+.mini-stat .lbl { font-size: 0.82rem; color: #64748b; margin-top: 0.2rem; }
+.history-card {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+.history-card .card-top {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+.table-custom { width: 100%; border-collapse: collapse; }
+.table-custom thead tr { background: #f8fafc; }
+.table-custom th {
+    padding: 1rem 1.2rem;
+    text-align: left;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f766e;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 2px solid #e2e8f0;
+}
+.table-custom td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.92rem;
+    color: #334155;
+    vertical-align: middle;
+}
+.table-custom tbody tr:hover { background: #f8fafc; transition: 0.15s; }
+.table-custom tbody tr:last-child td { border-bottom: none; }
+.badge-risk {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+.badge-low { background: #d1fae5; color: #065f46; }
+.badge-moderate { background: #fef3c7; color: #92400e; }
+.badge-high { background: #fee2e2; color: #991b1b; }
+.badge-critical { background: #fce7f3; color: #9d174d; }
+.badge-unknown { background: #f1f5f9; color: #475569; }
+.param-val {
+    font-weight: 700;
+    font-family: monospace;
+    font-size: 1rem;
+    color: #0f4d46;
+}
+.btn-delete {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #ef4444;
+    border-radius: 0.6rem;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-delete:hover { background: #ef4444; color: white; }
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #94a3b8;
+}
+.empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.4; display: block; }
+.live-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+}
+.refresh-info { font-size: 0.82rem; color: #94a3b8; }
+@media (max-width: 768px) {
+    .table-custom th:nth-child(4),
+    .table-custom td:nth-child(4) { display: none; }
+}
+{% endblock %}
 
 {% block content %}
 
-<h3>Prediction History</h3>
+<!-- Header -->
+<div class="history-header">
+    <h2><i class="fas fa-history me-2"></i>Prediction History 📜</h2>
+    <p>All water quality tests and disease risk predictions saved in real-time</p>
+</div>
 
-<table class="table table-bordered mt-3">
-    <tr>
-        <th>pH</th>
-        <th>Turbidity</th>
-        <th>Temp</th>
-        <th>Quality</th>
-        <th>Disease</th>
-    </tr>
+<!-- Mini Stats -->
+<div class="stats-row">
+    <div class="mini-stat">
+        <div class="val">{{ records|length }}</div>
+        <div class="lbl">Total Tests</div>
+    </div>
+    <div class="mini-stat">
+        <div class="val" style="color:#065f46;">{{ low_count }}</div>
+        <div class="lbl">Low Risk</div>
+    </div>
+    <div class="mini-stat">
+        <div class="val" style="color:#92400e;">{{ moderate_count }}</div>
+        <div class="lbl">Moderate Risk</div>
+    </div>
+    <div class="mini-stat">
+        <div class="val" style="color:#991b1b;">{{ high_count }}</div>
+        <div class="lbl">High Risk</div>
+    </div>
+    <div class="mini-stat">
+        <div class="val" style="color:#9d174d;">{{ critical_count }}</div>
+        <div class="lbl">Critical</div>
+    </div>
+</div>
 
-    {% for d in data %}
-    <tr>
-        <td>{{ d.ph }}</td>
-        <td>{{ d.turbidity }}</td>
-        <td>{{ d.temperature }}</td>
-        <td>{{ d.quality }}</td>
-        <td>{{ d.disease }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<!-- Table Card -->
+<div class="history-card">
+    <div class="card-top">
+        <div>
+            <span class="live-dot"></span>
+            <strong style="color:#0f766e;">Live Predictions</strong>
+            <span class="refresh-info ms-2">— auto-refreshes every 30s</span>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <span class="refresh-info" id="lastRefresh">Last refreshed: just now</span>
+            <button onclick="location.reload()" class="btn btn-sm"
+                style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:0.8rem; font-size:0.82rem; padding:0.3rem 0.8rem;">
+                <i class="fas fa-sync-alt me-1"></i>Refresh
+            </button>
+            {% if records %}
+            <a href="/history/clear/" onclick="return confirm('Clear all history?')"
+                style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); color:#ef4444;
+                border-radius:0.8rem; font-size:0.82rem; padding:0.35rem 0.8rem; text-decoration:none;">
+                <i class="fas fa-trash me-1"></i>Clear All
+            </a>
+            {% endif %}
+        </div>
+    </div>
 
+    {% if records %}
+    <div style="overflow-x:auto;">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>pH Level</th>
+                    <th>Turbidity (NTU)</th>
+                    <th>Temperature (°C)</th>
+                    <th>Risk Result</th>
+                    <th>Disease Info</th>
+                    <th>Date & Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td style="color:#94a3b8; font-size:0.82rem;">{{ forloop.counter }}</td>
+                    <td><span class="param-val">{{ record.ph }}</span></td>
+                    <td><span class="param-val">{{ record.turbidity }}</span></td>
+                    <td><span class="param-val">{{ record.temperature }}</span></td>
+                    <td>
+                        {% if 'low' in record.quality|lower %}
+                            <span class="badge-risk badge-low">✅ {{ record.quality }}</span>
+                        {% elif 'moderate' in record.quality|lower %}
+                            <span class="badge-risk badge-moderate">⚠️ {{ record.quality }}</span>
+                        {% elif 'high' in record.quality|lower %}
+                            <span class="badge-risk badge-high">🔴 {{ record.quality }}</span>
+                        {% elif 'critical' in record.quality|lower %}
+                            <span class="badge-risk badge-critical">🚨 {{ record.quality }}</span>
+                        {% else %}
+                            <span class="badge-risk badge-unknown">{{ record.quality }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size:0.85rem; color:#64748b;">{{ record.disease|truncatechars:30 }}</td>
+                    <td style="font-size:0.82rem; color:#64748b; white-space:nowrap;">
+                        <i class="fas fa-clock me-1"></i>{{ record.created_at|date:"M d, Y" }}<br>
+                        <span style="color:#94a3b8;">{{ record.created_at|time:"H:i:s" }}</span>
+                    </td>
+                    <td>
+                        <a href="/history/delete/{{ record.id }}/"
+                           onclick="return confirm('Delete this record?')"
+                           class="btn-delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-database"></i>
+        <h5>No predictions yet</h5>
+        <p>Submit a water quality test on the <a href="/" style="color:#0d9488;">Home page</a> or <a href="/disease_form/" style="color:#0d9488;">Disease page</a> to see results here.</p>
+        <a href="/" class="btn mt-2" style="background:linear-gradient(105deg,#0f766e,#0d9488); color:white; border-radius:2rem; padding:0.6rem 1.5rem; text-decoration:none;">
+            <i class="fas fa-plus me-1"></i>Make First Prediction
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto refresh every 30 seconds
+    let seconds = 30;
+    const refreshInfo = document.getElementById('lastRefresh');
+
+    setInterval(() => {
+        seconds--;
+        if (seconds <= 0) {
+            location.reload();
+        } else {
+            if (refreshInfo) refreshInfo.textContent = `Auto-refresh in ${seconds}s`;
+        }
+    }, 1000);
+</script>
 {% endblock %}
