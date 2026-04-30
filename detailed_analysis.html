@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Detailed Analysis | AquaRisk{% endblock %}
+
+{% block extra_css %}
+.main-card {
+    border: none; border-radius: 1.8rem;
+    background: rgba(255,255,255,0.96);
+    box-shadow: 0 20px 35px -10px rgba(0,32,32,0.2);
+}
+.form-control {
+    border-radius: 1rem;
+    border: 1.5px solid #cbd5e1;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.form-control:focus {
+    border-color: #14b8a6;
+    box-shadow: 0 0 0 3px rgba(20,184,166,0.2);
+}
+.btn-predict {
+    background: linear-gradient(105deg, #0f766e, #0d9488);
+    border: none; border-radius: 2rem; padding: 0.85rem;
+    font-weight: 700; font-size: 1.1rem;
+    box-shadow: 0 6px 14px rgba(13,148,136,0.3);
+    transition: all 0.25s;
+}
+.btn-predict:hover { transform: scale(0.98); }
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    <div class="text-center mb-4">
+      <h2 class="fw-bold" style="color:#0a3b3f;">🔬 Detailed Water Analysis</h2>
+      <p class="text-muted">Enter your actual water test readings for a precise assessment</p>
+    </div>
+
+    <div class="alert alert-info rounded-4 mb-4">
+      💡 <strong>Don't have a testing kit?</strong>
+      Use the <a href="/" class="fw-bold">Quick Check</a> on the home page instead.
+      Home testing kits (pH, TDS, turbidity) available on
+      <a href="https://www.amazon.in/s?k=water+testing+kit" target="_blank">Amazon</a> /
+      <a href="https://www.flipkart.com/search?q=water+testing+kit" target="_blank">Flipkart</a>
+      for under ₹500.
+    </div>
+
+    <div class="card main-card p-4 shadow-lg">
+      <div class="card-body p-0">
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">pH Value <span class="text-danger">*</span></label>
+              <input type="number" name="ph" class="form-control"
+                     placeholder="6.5 – 8.5 is safe" step="0.1" min="0" max="14" required>
+              <div class="form-text">WHO safe range: 6.5 – 8.5</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Turbidity (NTU) <span class="text-danger">*</span></label>
+              <input type="number" name="turbidity" class="form-control"
+                     placeholder="Below 5 NTU is safe" step="0.1" min="0" required>
+              <div class="form-text">WHO safe limit: &lt; 5 NTU</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Temperature (°C) <span class="text-danger">*</span></label>
+              <input type="number" name="temperature" class="form-control"
+                     placeholder="5 – 25°C is safe" step="0.1" required>
+              <div class="form-text">Above 35°C promotes bacterial growth</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">TDS (mg/L) <span class="text-muted fw-normal">optional</span></label>
+              <input type="number" name="tds" class="form-control"
+                     placeholder="Below 300 is ideal" step="1" min="0">
+              <div class="form-text">BIS safe limit: &lt; 500 mg/L</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Dissolved Oxygen (mg/L) <span class="text-muted fw-normal">optional</span></label>
+              <input type="number" name="do_mg_l" class="form-control"
+                     placeholder="Above 6 is good" step="0.1" min="0">
+              <div class="form-text">Below 5 mg/L indicates contamination</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">BOD (mg/L) <span class="text-muted fw-normal">optional</span></label>
+              <input type="number" name="bod_mg_l" class="form-control"
+                     placeholder="Below 3 is safe" step="0.1" min="0">
+              <div class="form-text">High BOD = high organic pollution</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Chlorine Residual (mg/L) <span class="text-muted fw-normal">optional</span></label>
+              <input type="number" name="chlorine" class="form-control"
+                     placeholder="0.2 – 1.0 is ideal" step="0.01" min="0">
+              <div class="form-text">Below 0.2 = insufficient disinfection</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Nitrate (mg/L) <span class="text-muted fw-normal">optional</span></label>
+              <input type="number" name="nitrate" class="form-control"
+                     placeholder="Below 10 is safe" step="0.1" min="0">
+              <div class="form-text">WHO limit: &lt; 10 mg/L</div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">📮 Your Pincode</label>
+            <input type="text" name="pincode" class="form-control"
+                   placeholder="e.g. 141001" maxlength="6" pattern="[0-9]{6}" required>
+            <div class="form-text">Used to track water quality trends in your area</div>
+          </div>
+
+          <button type="submit" class="btn btn-predict btn-lg w-100 text-white">
+            🔬 Run Detailed Analysis
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

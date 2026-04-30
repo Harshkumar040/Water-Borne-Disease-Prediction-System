@@ -2,14 +2,96 @@
 
 {% block content %}
 
-<div class="card p-4 shadow text-center">
+<div class="container mt-5">
 
-    <h2>Prediction Result</h2>
+    <!-- 🔥 RESULT HEADER -->
+    <div class="card shadow-lg border-0 mb-4 text-center p-4"
+         style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; border-radius: 20px;">
+        
+        <h2 class="fw-bold">Water Quality Report</h2>
+        
+        <h1 class="mt-3 fw-bold display-5">
+            {{ risk_level }}
+        </h1>
 
-    <h4 class="mt-3">{{ quality }}</h4>
-    <p class="mt-2">{{ disease }}</p>
+        <p class="mt-2">Pincode: {{ pincode }}</p>
 
-    <a href="/" class="btn btn-primary mt-3">Check Again</a>
+        {% if anomaly_score %}
+            <p class="mt-2">Anomaly Score: {{ anomaly_score }}</p>
+        {% endif %}
+    </div>
+
+
+    <!-- 🧠 SUMMARY -->
+    <div class="card shadow border-0 mb-4 p-4" style="border-radius: 15px;">
+        <h4 class="fw-bold mb-3">🧠 Interpretation</h4>
+        <p class="lead">{{ summary }}</p>
+    </div>
+
+
+    <!-- 🔍 KEY INSIGHTS -->
+    <div class="card shadow border-0 mb-4 p-4" style="border-radius: 15px;">
+        <h4 class="fw-bold mb-3">🔍 Key Insights</h4>
+
+        {% for item in analysis %}
+            <div class="d-flex align-items-start mb-3">
+                <div style="font-size: 20px; margin-right: 10px;">💡</div>
+                <div>{{ item }}</div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+    <!-- ⚠️ ACTION -->
+    <div class="card shadow border-0 mb-4 p-4"
+         style="border-left: 6px solid #ff4d4f; border-radius: 15px;">
+        
+        <h4 class="fw-bold mb-3 text-danger">⚠️ Recommended Action</h4>
+        <p class="fw-semibold">{{ action }}</p>
+    </div>
+
+
+    <!-- 📊 PARAMETERS -->
+    <div class="card shadow border-0 mb-4 p-4" style="border-radius: 15px;">
+        <h4 class="fw-bold mb-3">📊 Parameter Analysis</h4>
+
+        <div class="row text-center">
+
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-light rounded">
+                    <h6>pH</h6>
+                    <h5>{{ ph }}</h5>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-light rounded">
+                    <h6>Turbidity</h6>
+                    <h5>{{ turbidity }}</h5>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="p-3 bg-light rounded">
+                    <h6>Temperature</h6>
+                    <h5>{{ temperature }}</h5>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-3 text-center">
+            <p><strong>Most Critical Parameter:</strong> {{ worst_param }}</p>
+        </div>
+    </div>
+
+
+    <!-- 🔁 BUTTON -->
+    <div class="text-center">
+        <a href="{% url 'detailed_analysis' %}" class="btn btn-primary px-4 py-2 rounded-pill shadow">
+            🔁 Run Another Analysis
+        </a>
+    </div>
 
 </div>
 

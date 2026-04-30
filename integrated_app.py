@@ -716,6 +716,15 @@ def not_found(error):
 def internal_error(error):
     return jsonify({'error': 'Internal server error'}), 500
 
+@app.route("/api/users-by-pincode/<pincode>", methods=["GET"])
+@error_handler
+def users_by_pincode(pincode):
+    matched = [
+        uid for uid, prefs in sms_system.user_preferences.items()
+        if prefs.get('pincode') == pincode
+    ]
+    return jsonify({'pincode': pincode, 'users': matched})
+
 # ==================== STARTUP ====================
 
 if __name__ == "__main__":

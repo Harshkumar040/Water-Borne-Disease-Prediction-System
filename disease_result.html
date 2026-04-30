@@ -1,305 +1,120 @@
 {% extends 'base.html' %}
 
+{% block title %}Disease Risk Result | AquaRisk{% endblock %}
+
+{% block extra_css %}
+.result-panel {
+    max-width: 780px; margin: 0 auto;
+    background: rgba(255,255,255,0.97); padding: 2rem;
+    border-radius: 2rem; box-shadow: 0 12px 28px rgba(0,33,33,0.08);
+    border: 1px solid #e0f2f1;
+}
+.disease-header {
+    text-align: center; margin-bottom: 2rem;
+    padding: 1.5rem; border-radius: 1.5rem;
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+}
+.disease-name { font-size: 2rem; font-weight: 800; color: #991b1b; }
+.metric-flex {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.metric-item {
+    flex: 1; min-width: 130px;
+    background: #f0fbf9; padding: 1rem 1.2rem;
+    border-radius: 1.2rem; text-align: center;
+}
+.metric-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #2c7a6e; }
+.metric-value { font-size: 1.5rem; font-weight: 800; color: #0f4d46; }
+.info-block {
+    border-radius: 1.2rem; padding: 1rem 1.2rem;
+    margin-bottom: 1rem; display: flex; gap: 0.8rem;
+    align-items: flex-start; font-size: 0.9rem; line-height: 1.6;
+}
+.action-btn {
+    display: inline-block; padding: 0.7rem 2rem;
+    border-radius: 2rem; font-weight: 700; text-decoration: none;
+    transition: all 0.2s; border: 1.5px solid transparent;
+}
+{% endblock %}
+
 {% block content %}
 
-<div class="container mt-4">
-    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-        <div class="card-header bg-gradient-primary text-white py-3" style="background: linear-gradient(135deg, #0f766e, #0d9488);">
-            <h2 class="text-center mb-0 fw-bold">
-                <span class="me-2">🦠</span> Disease Risk Assessment Result
-                <span class="ms-2">📊</span>
-            </h2>
+{% if result %}
+<div class="result-panel">
+
+    <!-- Disease header -->
+    <div class="disease-header">
+        <div style="font-size:3rem; margin-bottom:0.5rem;">🦠</div>
+        <div class="disease-name">{{ result.disease }}</div>
+        <div style="color:#7f1d1d; margin-top:0.3rem;">Most likely waterborne disease based on your symptoms</div>
+    </div>
+
+    <!-- Severity alert -->
+    {% if result.severity_boost %}
+    <div class="alert alert-danger rounded-3 mb-3">
+        ⚠️ <strong>High Vulnerability:</strong> Children and elderly are at significantly higher risk from waterborne diseases. Seek medical attention sooner rather than later.
+    </div>
+    {% endif %}
+
+    <!-- Metrics -->
+    <div class="metric-flex">
+        <div class="metric-item">
+            <div class="metric-label">Confidence</div>
+            <div class="metric-value">{{ result.confidence }}%</div>
         </div>
-        
-        <div class="card-body p-4">
-            {% if result %}
-                <div class="result-container">
-
-                    <!-- Risk Level Badge -->
-                    <div class="risk-level mb-4 text-center">
-                        {% if result.risk_level == "SEVERE" %}
-                            <div class="badge bg-danger p-3 fs-5 rounded-pill">
-                                🔴 SEVERE — HIGHLY DANGEROUS 🔴
-                            </div>
-                        {% elif result.risk_level == "HIGH" %}
-                            <div class="badge p-3 fs-5 rounded-pill" style="background-color:#fd7e14 !important; color:white;">
-                                🟠 HIGH — CONTAMINATED 🟠
-                            </div>
-                        {% elif result.risk_level == "MEDIUM" %}
-                            <div class="badge bg-warning p-3 fs-5 rounded-pill">
-                                🟡 MEDIUM — SLIGHTLY UNSAFE 🟡
-                            </div>
-                        {% elif result.risk_level == "NORMAL" %}
-                            <div class="badge bg-success p-3 fs-5 rounded-pill">
-                                🟢 NORMAL — SAFE DRINKING WATER 🟢
-                            </div>
-                        {% else %}
-                            <div class="badge bg-info p-3 fs-5 rounded-pill">
-                                ℹ️ ANALYSIS COMPLETE
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Main Result Display -->
-                    <div class="alert alert-info border-0 rounded-3 shadow-sm" style="background: linear-gradient(135deg, #e0f2fe 0%, #ccfbf1 100%);">
-                        <h5 class="alert-heading fw-bold mb-3">
-                            <i class="fas fa-microscope me-2"></i>Disease Risk Assessment Results
-                        </h5>
-                        <div class="result-content">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="card h-100 border-0 bg-white">
-                                        <div class="card-body text-center">
-                                            <div class="display-4 mb-2">📊</div>
-                                            <h6 class="card-title fw-bold">Risk Level</h6>
-                                            <p class="card-text fs-4 fw-bold text-primary">{{ result.risk_level }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 border-0 bg-white">
-                                        <div class="card-body text-center">
-                                            <div class="display-4 mb-2">👥</div>
-                                            <h6 class="card-title fw-bold">Predicted Cases</h6>
-                                            <p class="card-text fs-4 fw-bold text-warning">{{ result.predicted_cases }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 border-0 bg-white">
-                                        <div class="card-body text-center">
-                                            <div class="display-4 mb-2">🎯</div>
-                                            <h6 class="card-title fw-bold">Confidence</h6>
-                                            <p class="card-text fs-4 fw-bold text-success">{{ result.confidence|floatformat:1 }}%</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 border-0 bg-white">
-                                        <div class="card-body text-center">
-                                            <div class="display-4 mb-2">🛡️</div>
-                                            <h6 class="card-title fw-bold">Recommended Action</h6>
-                                            <p class="card-text fs-5 fw-bold text-info">{{ result.recommended_action }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Additional Details Section -->
-                    <div class="row mt-4 g-3">
-                        <div class="col-md-4">
-                            <div class="card h-100 border-0 shadow-sm bg-light">
-                                <div class="card-body text-center">
-                                    <div class="display-4 mb-2">💧</div>
-                                    <h6 class="card-title fw-bold">Water Quality Index</h6>
-                                    <p class="card-text small text-muted">Based on submitted parameters</p>
-                                    {% if result.risk_level == "SEVERE" %}
-                                        <span class="badge bg-danger">Very Poor</span>
-                                    {% elif result.risk_level == "HIGH" %}
-                                        <span class="badge" style="background-color:#fd7e14;">Poor</span>
-                                    {% elif result.risk_level == "MEDIUM" %}
-                                        <span class="badge bg-warning text-dark">Fair</span>
-                                    {% else %}
-                                        <span class="badge bg-success">Good</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card h-100 border-0 shadow-sm bg-light">
-                                <div class="card-body text-center">
-                                    <div class="display-4 mb-2">🦠</div>
-                                    <h6 class="card-title fw-bold">Pathogen Probability</h6>
-                                    <p class="card-text small text-muted">Microbial contamination risk</p>
-                                    {% if result.risk_level == "SEVERE" %}
-                                        <span class="badge bg-danger">&gt;90%</span>
-                                    {% elif result.risk_level == "HIGH" %}
-                                        <span class="badge" style="background-color:#fd7e14;">60–90%</span>
-                                    {% elif result.risk_level == "MEDIUM" %}
-                                        <span class="badge bg-warning text-dark">20–60%</span>
-                                    {% else %}
-                                        <span class="badge bg-success">&lt;20%</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card h-100 border-0 shadow-sm bg-light">
-                                <div class="card-body text-center">
-                                    <div class="display-4 mb-2">⚕️</div>
-                                    <h6 class="card-title fw-bold">Urgency</h6>
-                                    <p class="card-text small text-muted">Immediate steps to take</p>
-                                    {% if result.risk_level == "SEVERE" %}
-                                        <span class="badge bg-danger">Emergency</span>
-                                    {% elif result.risk_level == "HIGH" %}
-                                        <span class="badge" style="background-color:#fd7e14;">Urgent Care</span>
-                                    {% elif result.risk_level == "MEDIUM" %}
-                                        <span class="badge bg-warning text-dark">Monitor & Treat</span>
-                                    {% else %}
-                                        <span class="badge bg-success">Standard Precaution</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Prevention Tips -->
-                    <div class="mt-4 p-3 rounded-3" style="background: #f8f9fa; border-left: 4px solid #0d9488;">
-                        <h6 class="fw-bold mb-2">
-                            <i class="fas fa-lightbulb me-2"></i>Prevention Recommendations
-                        </h6>
-                        <ul class="mb-0 small">
-                            {% if result.risk_level == "SEVERE" %}
-                                <li>🚨 Do NOT use this water for any purpose — drinking, cooking or bathing</li>
-                                <li>🏥 Alert local health authorities and public health officials immediately</li>
-                                <li>💊 Seek immediate medical attention if any symptoms appear</li>
-                                <li>🚰 Use only sealed bottled water until further notice</li>
-                            {% elif result.risk_level == "HIGH" %}
-                                <li>🚫 Do not consume untreated water under any circumstances</li>
-                                <li>🧪 Perform comprehensive water quality testing immediately</li>
-                                <li>💊 Seek medical attention if symptoms appear</li>
-                                <li>🚰 Install reverse osmosis or UV filtration system</li>
-                            {% elif result.risk_level == "MEDIUM" %}
-                                <li>💧 Boil water for at least 1 minute before drinking</li>
-                                <li>🧼 Maintain proper sanitation and hygiene practices</li>
-                                <li>📊 Monitor water quality regularly</li>
-                                <li>🔧 Consider activated carbon filtration</li>
-                            {% else %}
-                                <li>✅ Continue standard water safety practices</li>
-                                <li>📅 Periodic water quality testing recommended</li>
-                                <li>🧴 Store water in clean, covered containers</li>
-                                <li>🚿 Maintain good personal hygiene</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-
-                </div>
-            {% else %}
-                <!-- No Result Found Message -->
-                <div class="text-center py-5">
-                    <div class="display-1 mb-3">🔍</div>
-                    <h4 class="text-muted mb-3">No Result Found</h4>
-                    <p class="text-secondary mb-4">Please submit water quality parameters to receive a disease risk assessment.</p>
-                    <a href="/disease_form/" class="btn btn-primary btn-lg rounded-pill px-4">
-                        <i class="fas fa-arrow-left me-2"></i>Go to Prediction Form
-                    </a>
-                </div>
-            {% endif %}
-
-            <!-- Action Buttons -->
-            <div class="text-center mt-4 pt-3 border-top">
-                <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <a href="/disease_form/" class="btn btn-outline-primary rounded-pill px-4 py-2">
-                        <i class="fas fa-sync-alt me-2"></i>Check Again
-                    </a>
-                    <a href="#" class="btn btn-outline-secondary rounded-pill px-4 py-2" onclick="window.print();">
-                        <i class="fas fa-print me-2"></i>Print Report
-                    </a>
-                    <a href="#" class="btn btn-outline-success rounded-pill px-4 py-2" id="downloadReport">
-                        <i class="fas fa-download me-2"></i>Download Report
-                    </a>
-                </div>
+        <div class="metric-item">
+            <div class="metric-label">Severity</div>
+            <div class="metric-value">
+                {% if result.severity == 'HIGH' %}🔴 HIGH
+                {% elif result.severity == 'MEDIUM' %}🟡 MED
+                {% else %}🟢 LOW{% endif %}
             </div>
         </div>
-        
-        <div class="card-footer bg-light text-muted text-center py-3 small">
-            <i class="fas fa-shield-alt me-1"></i> AI-Powered Prediction | Data source: WHO Water Quality Guidelines | For informational purposes only
-        </div>
     </div>
+
+    <!-- About disease -->
+    <div class="info-block" style="background:#f0fbf9; border-left:4px solid #0d9488;">
+        <i class="fas fa-info-circle" style="color:#0d9488; margin-top:3px; font-size:1.1rem; flex-shrink:0;"></i>
+        <span><strong>About {{ result.disease }}:</strong> {{ result.info.description }}</span>
+    </div>
+
+    <!-- When to go hospital -->
+    <div class="info-block" style="background:#fff5f5; border-left:4px solid #dc2626;">
+        <i class="fas fa-hospital" style="color:#dc2626; margin-top:3px; font-size:1.1rem; flex-shrink:0;"></i>
+        <span><strong>🏥 When to go to hospital:</strong> {{ result.info.go_to_hospital }}</span>
+    </div>
+
+    <!-- Immediate steps -->
+    <div class="info-block" style="background:#f0fdf4; border-left:4px solid #059669;">
+        <i class="fas fa-check-circle" style="color:#059669; margin-top:3px; font-size:1.1rem; flex-shrink:0;"></i>
+        <span><strong>✅ Immediate steps:</strong> {{ result.info.immediate }}</span>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center">
+        <a href="/" class="action-btn" style="background:linear-gradient(105deg,#0f766e,#0d9488); color:white;">
+            💧 Check Your Water Quality
+        </a>
+        <a href="/chat/" class="action-btn" style="background:#f1f5f9; color:#0f766e; border-color:#e2e8f0;">
+            🤖 Ask AquaRisk Chatbot
+        </a>
+        <a href="/disease_form/" class="action-btn" style="background:#fff5f5; color:#dc2626; border-color:#fecaca;">
+            🔄 Check Again
+        </a>
+    </div>
+
+    <p class="text-muted text-center small mt-4 mb-0">
+        ⚠️ This is not a medical diagnosis. Always consult a qualified doctor for clinical confirmation and treatment.
+    </p>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const downloadBtn = document.getElementById('downloadReport');
-        if (downloadBtn) {
-            downloadBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                {% if result %}
-                    const reportContent = `
-============================================
-WATER DISEASE RISK ASSESSMENT REPORT
-============================================
-Date: ${new Date().toLocaleString()}
-
-RISK ANALYSIS RESULT:
-----------------------
-Risk Level     : {{ result.risk_level }}
-Predicted Cases: {{ result.predicted_cases }}
-Confidence     : {{ result.confidence }}
-Action         : {{ result.recommended_action }}
-
-RECOMMENDATIONS:
-----------------
-${document.querySelector('.mt-4.p-3.rounded-3 ul')?.innerText || 'Please consult healthcare provider'}
-
-============================================
-* This is an AI-generated prediction report.
-* Consult medical professionals for diagnosis.
-============================================
-                    `;
-                    const blob = new Blob([reportContent], {type: 'text/plain'});
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `water_risk_report_${new Date().toISOString().slice(0,19)}.txt`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                {% else %}
-                    alert('No report data available. Please submit the form first.');
-                {% endif %}
-            });
-        }
-
-        const resultContainer = document.querySelector('.result-container');
-        if (resultContainer) {
-            resultContainer.style.opacity = '0';
-            resultContainer.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                resultContainer.style.transition = 'all 0.5s ease';
-                resultContainer.style.opacity = '1';
-                resultContainer.style.transform = 'translateY(0)';
-            }, 100);
-        }
-    });
-</script>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
-    .card {
-        border-radius: 1rem !important;
-        transition: transform 0.2s;
-    }
-    .card:hover {
-        transform: translateY(-2px);
-    }
-    .badge {
-        font-weight: 600;
-        letter-spacing: 0.5px;
-    }
-    .btn {
-        transition: all 0.3s ease;
-    }
-    .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    @media print {
-        .btn, .card-footer { display: none !important; }
-        .card { box-shadow: none !important; border: 1px solid #ddd !important; }
-        body { background: white !important; }
-    }
-    .result-container {
-        animation: fadeInUp 0.5s ease-out;
-    }
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-</style>
+{% else %}
+<div class="text-center py-5">
+    <div style="font-size:4rem;">🔍</div>
+    <h4 class="text-muted mt-3">No result found</h4>
+    <a href="/disease_form/" class="btn btn-primary mt-3 rounded-pill px-4">Go to Disease Checker</a>
+</div>
+{% endif %}
 
 {% endblock %}

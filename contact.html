@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us | AquaRisk{% endblock %}
+
+{% block content %}
+<style>
+.contact-header {
+    background: linear-gradient(135deg, #0f766e, #0891b2);
+    border-radius: 1.5rem; padding: 2.5rem 2rem;
+    text-align: center; color: white; margin-bottom: 2rem;
+}
+.contact-header h2 { font-size: 2rem; font-weight: 800; margin: 0; }
+.contact-header p { opacity: 0.9; margin: 0.5rem 0 0; }
+.contact-card {
+    background: white; border-radius: 1.8rem;
+    box-shadow: 0 20px 35px -10px rgba(0,32,32,0.15);
+    border: 1px solid #e2e8f0;
+}
+.form-label { font-weight: 600; font-size: 0.9rem; color: #1e4a4e; }
+.form-control {
+    border-radius: 1rem; border: 1.5px solid #cbd5e1;
+    padding: 0.75rem 1rem; font-weight: 500; transition: all 0.2s;
+}
+.form-control:focus { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20,184,166,0.2); }
+.btn-submit {
+    background: linear-gradient(105deg, #0f766e, #0891b2);
+    border: none; border-radius: 2rem; padding: 0.85rem;
+    font-weight: 700; font-size: 1rem; color: white; width: 100%;
+    transition: all 0.25s; box-shadow: 0 6px 14px rgba(8,145,178,0.3);
+}
+.btn-submit:hover { background: linear-gradient(105deg, #0b5e56, #0773a0); transform: translateY(-1px); color: white; }
+.info-box {
+    background: linear-gradient(135deg, #f0fdf9, #e0f2fe);
+    border-radius: 1.2rem; padding: 1.5rem; height: 100%;
+}
+.info-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: white; border-radius: 1rem;
+    padding: 1rem 1.2rem; margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-left: 4px solid #0d9488;
+}
+.info-item i { color: #0d9488; font-size: 1.3rem; margin-top: 2px; }
+.info-item strong { display: block; color: #0f766e; font-size: 0.9rem; }
+.info-item span { font-size: 0.88rem; color: #64748b; }
+.subject-pill {
+    display: inline-block; background: #f1f5f9;
+    border: 1.5px solid #e2e8f0; border-radius: 2rem;
+    padding: 0.4rem 1rem; font-size: 0.85rem;
+    font-weight: 500; cursor: pointer; transition: all 0.18s;
+    color: #475569; margin: 0.2rem;
+}
+.subject-pill:hover { background: #0d9488; color: white; border-color: #0d9488; }
+</style>
+
+<!-- Header -->
+<div class="contact-header">
+    <h2><i class="fas fa-envelope me-2"></i>Contact Us 📬</h2>
+    <p>Have a question, suggestion, or issue? We'd love to hear from you!</p>
+</div>
+
+<div class="row g-4">
+    <!-- Contact Form -->
+    <div class="col-lg-7">
+        <div class="contact-card p-4">
+            <h4 class="fw-bold mb-4" style="color:#0f766e;">
+                <i class="fas fa-paper-plane me-2"></i>Send us a Message
+            </h4>
+            <form method="POST" action="/contact/">
+                {% csrf_token %}
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="fas fa-user me-1" style="color:#0d9488;"></i>Your Name</label>
+                        <input type="text" name="name" class="form-control"
+                               placeholder="e.g. Harsh Kumar"
+                               value="{{ user.get_full_name|default:user.username }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="fas fa-envelope me-1" style="color:#0d9488;"></i>Email Address</label>
+                        <input type="email" name="email" class="form-control"
+                               placeholder="you@example.com"
+                               value="{{ user.email }}" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-tag me-1" style="color:#0d9488;"></i>Subject</label>
+                    <input type="text" name="subject" class="form-control"
+                           id="subjectInput" placeholder="What is your query about?" required>
+                    <div class="mt-2">
+                        <small class="text-muted">Quick select:</small><br>
+                        <span class="subject-pill" onclick="setSubject('Water Quality Issue')">💧 Water Quality Issue</span>
+                        <span class="subject-pill" onclick="setSubject('Technical Problem')">⚙️ Technical Problem</span>
+                        <span class="subject-pill" onclick="setSubject('Disease Prediction Query')">🦠 Disease Query</span>
+                        <span class="subject-pill" onclick="setSubject('Suggestion or Feedback')">💡 Suggestion</span>
+                        <span class="subject-pill" onclick="setSubject('Other')">📝 Other</span>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label"><i class="fas fa-comment-alt me-1" style="color:#0d9488;"></i>Your Message</label>
+                    <textarea name="message" class="form-control" rows="5"
+                              placeholder="Describe your query in detail..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-submit">
+                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="col-lg-5">
+        <div class="info-box">
+            <h5 class="fw-bold mb-3" style="color:#0f766e;">
+                <i class="fas fa-info-circle me-2"></i>Get in Touch
+            </h5>
+            <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <div><strong>Email Us</strong><span>support@aquarisk.org</span></div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-phone-alt"></i>
+                <div><strong>Call Us</strong><span>+91 81950-34972</span></div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <div><strong>Response Time</strong><span>Usually within 24–48 hours</span></div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div><strong>Location</strong><span>Punjab, India 🇮🇳</span></div>
+            </div>
+            <hr style="border-color:#e2e8f0; margin:1.5rem 0;">
+            <h6 class="fw-bold mb-3" style="color:#0f766e;">
+                <i class="fas fa-question-circle me-2"></i>Common Queries
+            </h6>
+            <div style="background:white;border-radius:1rem;padding:1rem;margin-bottom:0.8rem;font-size:0.88rem;">
+                <strong>💧 How accurate is the prediction?</strong><br>
+                <span class="text-muted">Our ML model achieves 99%+ accuracy based on WHO guidelines.</span>
+            </div>
+            <div style="background:white;border-radius:1rem;padding:1rem;margin-bottom:0.8rem;font-size:0.88rem;">
+                <strong>🦠 What diseases can it detect?</strong><br>
+                <span class="text-muted">Cholera, Typhoid, Hepatitis A, Dysentery, E. coli risks.</span>
+            </div>
+            <div style="background:white;border-radius:1rem;padding:1rem;font-size:0.88rem;">
+                <strong>📊 Is my data private?</strong><br>
+                <span class="text-muted">Yes — all predictions are stored securely and never shared.</span>
+            </div>
+            <hr style="border-color:#e2e8f0; margin:1.5rem 0;">
+            <p class="small text-muted mb-0 text-center">
+                <i class="fas fa-shield-alt me-1" style="color:#0d9488;"></i>
+                Your queries are visible only to our admin team.
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setSubject(text) {
+    document.getElementById('subjectInput').value = text;
+}
+</script>
+{% endblock %}

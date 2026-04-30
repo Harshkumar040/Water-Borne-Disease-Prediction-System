@@ -1,291 +1,727 @@
 {% extends "base.html" %}
 
-{% block title %}AquaRisk | Intelligent Water Quality Prediction{% endblock %}
+{% block title %}AquaRisk | Water Health Survey{% endblock %}
 
 {% block extra_css %}
-.hero-section {
-    background: rgba(255,255,255,0.3);
-    backdrop-filter: blur(12px);
-    border-radius: 2rem;
-    padding: 2rem;
+html {
+    scroll-behavior: smooth;
+}
+
+/* ══ Existing Survey Styles ══ */
+.survey-header {
+    background: linear-gradient(135deg, #134e4a, #0f766e); /* Matched to intro-hero */
+    border-radius: 1.8rem; 
+    padding: 2.5rem 2rem;
+    text-align: center; 
+    color: white; 
     margin-bottom: 2rem;
-    border: 1px solid rgba(255,255,255,0.6);
-    box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
-}
-.main-card {
+    box-shadow: 0 15px 30px -5px rgba(15, 118, 110, 0.25); /* Matched shadow */
     border: none;
-    border-radius: 1.8rem;
-    background: rgba(255,255,255,0.96);
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 20px 35px -10px rgba(0,32,32,0.2);
 }
-.main-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 25px 40px -12px rgba(13,148,136,0.25);
+.survey-header h2 { font-size: 2rem; font-weight: 800; margin: 0; }
+.survey-header p { opacity: 0.9; margin: 0.5rem 0 0; }
+.survey-card {
+    background: white; border-radius: 1.8rem;
+    box-shadow: 0 20px 35px -10px rgba(0,32,32,0.12);
+    border: 1px solid #e2e8f0; overflow: hidden;
 }
-.form-control {
-    border-radius: 1rem;
-    border: 1.5px solid #cbd5e1;
-    padding: 0.75rem 1rem;
-    font-weight: 500;
-    transition: all 0.2s;
+.question-block {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.2s;
 }
-.form-control:focus {
-    border-color: #14b8a6;
-    box-shadow: 0 0 0 3px rgba(20,184,166,0.2);
+.question-block:hover { background: #fafffe; }
+.question-block:last-child { border-bottom: none; }
+.question-number {
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    color: white; border-radius: 50%;
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; margin-right: 0.8rem;
+    flex-shrink: 0;
 }
-.btn-predict {
+.question-title {
+    font-weight: 700; font-size: 1rem; color: #1e4a4e;
+    display: flex; align-items: center; margin-bottom: 1rem;
+}
+.options-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.6rem;
+}
+.option-item { position: relative; }
+.option-item input[type="radio"] { display: none; }
+.option-item label {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: #f8faff; border: 1.5px solid #e2e8f0;
+    border-radius: 0.9rem; padding: 0.6rem 1rem;
+    font-size: 0.88rem; font-weight: 500; cursor: pointer;
+    transition: all 0.18s; color: #475569; width: 100%;
+}
+.option-item input:checked + label {
     background: linear-gradient(105deg, #0f766e, #0d9488);
+    border-color: transparent; color: white;
+    box-shadow: 0 3px 10px rgba(13,148,136,0.3);
+}
+.option-item label:hover { border-color: #0d9488; color: #0d9488; background: #f0fdf9; }
+.btn-submit-survey {
+    background: linear-gradient(105deg, #0f766e, #0891b2);
+    border: none; border-radius: 2rem; padding: 1rem 2rem;
+    font-weight: 700; font-size: 1.1rem; color: white;
+    width: 100%; transition: all 0.25s;
+    box-shadow: 0 6px 14px rgba(8,145,178,0.3); cursor: pointer;
+}
+.btn-submit-survey:hover { transform: translateY(-2px); }
+.progress-bar-custom {
+    background: #e2e8f0; border-radius: 2rem; height: 8px;
+    margin-bottom: 2rem; overflow: hidden;
+}
+.progress-fill {
+    height: 100%; border-radius: 2rem;
+    background: linear-gradient(90deg, #0f766e, #0891b2);
+    transition: width 0.3s;
+}
+.result-card {
+    background: white; border-radius: 1.8rem;
+    box-shadow: 0 20px 35px -10px rgba(0,32,32,0.12);
+    padding: 2rem; border: 1px solid #e2e8f0;
+}
+.risk-badge-large {
+    border-radius: 1.2rem; padding: 1.5rem 2rem;
+    display: flex; align-items: center; gap: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+.suggestion-item {
+    background: #f0fdf9; border-radius: 1rem;
+    padding: 0.8rem 1.2rem; margin-bottom: 0.6rem;
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    border-left: 4px solid #0d9488; font-size: 0.9rem;
+}
+.past-survey-item {
+    background: #f8faff; border-radius: 1rem;
+    padding: 0.8rem 1.2rem; margin-bottom: 0.6rem;
+    display: flex; justify-content: space-between;
+    align-items: center; border: 1px solid #e2e8f0;
+    font-size: 0.88rem;
+}
+
+/* ══ Landing Page Styles ══ */
+.intro-hero {
+    background: linear-gradient(135deg, #134e4a, #0f766e); /* Matches dark header */
+    border-radius: 1.8rem;
+    padding: 3rem 2rem;
+    text-align: center;
     border: none;
-    border-radius: 2rem;
-    padding: 0.85rem;
-    font-weight: 700;
-    font-size: 1.1rem;
-    transition: all 0.25s;
-    box-shadow: 0 6px 14px rgba(13,148,136,0.3);
+    margin-bottom: 3rem;
+    box-shadow: 0 15px 30px -5px rgba(15, 118, 110, 0.25);
 }
-.btn-predict:hover {
-    background: linear-gradient(105deg, #0b5e56, #0c7e72);
-    transform: scale(0.98);
+.intro-hero h1 { color: #ffffff; font-weight: 800; font-size: 2.5rem; margin-bottom: 1rem; }
+.intro-hero p.lead-text { color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; max-width: 800px; margin: 0 auto 2rem; line-height: 1.6; }
+.stats-grid {
+    display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
 }
-.info-icon-box {
-    background: #eef9ff;
-    border-radius: 1.2rem;
-    padding: 1.2rem;
-    text-align: center;
-    height: 100%;
-    transition: all 0.2s;
-    border: 1px solid #cffafe;
+.stat-box {
+    background: white; padding: 1.5rem; border-radius: 1.2rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    min-width: 200px; border-bottom: 4px solid #0d9488;
 }
-.info-icon-box:hover {
-    background: #fff;
-    transform: translateY(-5px);
-    box-shadow: 0 12px 20px rgba(0,0,0,0.05);
+.stat-box h3 { font-size: 2rem; font-weight: 800; color: #0f766e; margin: 0; }
+.stat-box p { font-size: 0.9rem; color: #64748b; margin: 0; font-weight: 600; text-transform: uppercase; }
+
+.section-title { color: #0f766e; font-weight: 800; font-size: 1.8rem; text-align: center; margin-bottom: 2rem; }
+.step-card {
+    background: white; border-radius: 1.2rem; padding: 1.5rem;
+    border: 1px solid #e2e8f0; text-align: center; height: 100%;
 }
-.stat-card {
-    background: white;
-    border-radius: 1.2rem;
-    padding: 1rem;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+.step-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.step-card h4 { font-size: 1.2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+.step-card p { font-size: 0.9rem; color: #64748b; margin: 0; }
+
+.feature-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;
+    margin-bottom: 3rem;
 }
-.badge-soft {
-    background: #ccfbf1;
-    color: #115e59;
-    padding: 0.4rem 1rem;
-    border-radius: 2rem;
-    font-weight: 600;
+.feature-card {
+    display: flex; gap: 1rem; align-items: flex-start; background: white;
+    padding: 1.2rem; border-radius: 1rem; border: 1px solid #e2e8f0;
+}
+.feature-card .f-icon { font-size: 1.5rem; }
+.feature-card h5 { font-size: 1rem; font-weight: 700; color: #0f766e; margin: 0 0 0.3rem 0; }
+.feature-card p { font-size: 0.85rem; color: #64748b; margin: 0; }
+
+.disease-tags { display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin-bottom: 3rem; }
+.disease-tag {
+    background: #fff1f2; border: 1px solid #fecdd3; color: #9f1239;
+    padding: 0.6rem 1.2rem; border-radius: 2rem; font-weight: 600; font-size: 0.95rem;
+    display: flex; align-items: center; gap: 0.5rem;
+}
+
+/* ══ Sticky Sidebar Fix ══ */
+.sticky-sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 90px; /* Adjust this slightly if your top navbar is thicker/thinner */
+    height: max-content; /* Prevents the div from stretching, which breaks stickiness in flex rows */
+    z-index: 10;
+    will-change: transform; /* Hardware acceleration for smooth scrolling */
+    padding-bottom: 2rem;
 }
 {% endblock %}
 
 {% block content %}
 
-<!-- Hero Section -->
-<div class="hero-section text-center">
-    <span class="badge-soft mb-2 d-inline-block"><i class="fas fa-robot me-1"></i> AI-Powered Health Intelligence</span>
-    <h1 class="display-5 fw-bold mt-2" style="color:#0a3b3f;">Safe Water, Healthy Future 💙</h1>
-    <p class="lead text-dark-emphasis mt-3 mx-auto" style="max-width:750px;">Our intelligent system predicts waterborne disease risk using real-time parameters: pH, turbidity, and temperature. Trusted by public health agencies and communities worldwide.</p>
-    <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
-        <div><i class="fas fa-check-circle text-success"></i> WHO Guidelines</div>
-        <div><i class="fas fa-chart-simple text-info"></i> 99.2% Accuracy</div>
-    </div>
-</div>
-
+{% if submitted %}
 <div class="row g-4">
-    <!-- LEFT: Prediction Form -->
-    <div class="col-lg-6">
-        <div class="card main-card p-4 shadow-lg">
-            <div class="card-body p-0">
-                <div class="text-center mb-3">
-                    <i class="fas fa-flask fa-2x" style="color:#0f766e;"></i>
-                    <h3 class="fw-bold mt-2" style="color:#134e4a;">Check Water Quality</h3>
-                    <p class="text-muted">Enter three key parameters for instant disease risk assessment</p>
+    <div class="col-lg-8">
+        <div class="result-card">
+            <h4 class="fw-bold mb-4" style="color:#0f766e;">
+                <i class="fas fa-chart-bar me-2"></i>Your Survey Results
+            </h4>
+
+            {% if risk_level == 'Low Risk' %}
+            <div class="risk-badge-large" style="background:#d1fae5;">
+                <span style="font-size:3rem;">✅</span>
+                <div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#065f46;">Low Risk</div>
+                    <div style="color:#065f46; opacity:0.85;">Your water environment appears relatively safe.</div>
                 </div>
-                <form method="POST" id="waterQualityForm">
-                    {% csrf_token %}
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold"><i class="fas fa-vial me-1"></i> pH Level (0–14)</label>
-                        <input type="number" step="any" name="ph" class="form-control" required>
-                        <div class="form-text">Ideal range: 6.5 – 8.5</div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold"><i class="fas fa-water me-1"></i> Turbidity (NTU)</label>
-                        <input type="number" step="any" name="turbidity" class="form-control" required>
-                        <div class="form-text">>5 NTU indicates high suspended solids</div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold"><i class="fas fa-temperature-high me-1"></i> Temperature (°C)</label>
-                        <input type="number" step="any" name="temperature" class="form-control" required>
-                        <div class="form-text">25–40°C promotes bacterial growth</div>
-                    </div>
-                    <button type="submit" class="btn btn-predict w-100 text-white">
-                        <i class="fas fa-microchip me-2"></i> Predict Disease Risk
-                    </button>
-                </form>
-                {% if result %}
-                <div class="alert alert-success mt-4 rounded-4" style="background:#e6f7f5; border-left:5px solid #0f766e;">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="fas fa-chart-line fs-4"></i>
-                        <strong>Prediction Result:</strong> {{ result }}
-                    </div>
-                    {% if category %}
-                    <hr class="my-2">
-                    <div><i class="fas fa-tag me-1"></i> Risk Category: <span class="fw-bold">{{ category }}</span></div>
-                    {% endif %}
+                <div style="margin-left:auto; text-align:right;">
+                    <div style="font-size:0.75rem; color:#065f46;">Score</div>
+                    <div style="font-size:2rem; font-weight:800; color:#065f46;">{{ score }}/295</div>
                 </div>
+            </div>
+            {% elif risk_level == 'Moderate Risk' %}
+            <div class="risk-badge-large" style="background:#fef3c7;">
+                <span style="font-size:3rem;">⚠️</span>
+                <div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#92400e;">Moderate Risk</div>
+                    <div style="color:#92400e; opacity:0.85;">Some risk factors present. Take precautions.</div>
+                </div>
+                <div style="margin-left:auto; text-align:right;">
+                    <div style="font-size:0.75rem; color:#92400e;">Score</div>
+                    <div style="font-size:2rem; font-weight:800; color:#92400e;">{{ score }}/295</div>
+                </div>
+            </div>
+            {% elif risk_level == 'High Risk' %}
+            <div class="risk-badge-large" style="background:#fee2e2;">
+                <span style="font-size:3rem;">🔴</span>
+                <div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#991b1b;">High Risk</div>
+                    <div style="color:#991b1b; opacity:0.85;">Multiple risk factors. Immediate action needed.</div>
+                </div>
+                <div style="margin-left:auto; text-align:right;">
+                    <div style="font-size:0.75rem; color:#991b1b;">Score</div>
+                    <div style="font-size:2rem; font-weight:800; color:#991b1b;">{{ score }}/295</div>
+                </div>
+            </div>
+            {% else %}
+            <div class="risk-badge-large" style="background:#fce7f3;">
+                <span style="font-size:3rem;">🚨</span>
+                <div>
+                    <div style="font-size:1.6rem; font-weight:800; color:#9d174d;">Critical Risk</div>
+                    <div style="color:#9d174d; opacity:0.85;">Serious contamination likely. Act immediately.</div>
+                </div>
+                <div style="margin-left:auto; text-align:right;">
+                    <div style="font-size:0.75rem; color:#9d174d;">Score</div>
+                    <div style="font-size:2rem; font-weight:800; color:#9d174d;">{{ score }}/295</div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div style="margin-bottom:1.5rem;">
+                <div style="font-size:0.78rem; color:#64748b; font-weight:600; margin-bottom:0.4rem;">RISK SCORE</div>
+                <div style="background:#e2e8f0; border-radius:2rem; height:12px; overflow:hidden;">
+                    <div style="width:{% widthratio score 295 100 %}%; height:100%;
+                        background:{% if risk_level == 'Low Risk' %}#10b981{% elif risk_level == 'Moderate Risk' %}#f59e0b{% elif risk_level == 'High Risk' %}#ef4444{% else %}#9d174d{% endif %};
+                        border-radius:2rem;"></div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-3" style="color:#0f766e;">
+                <i class="fas fa-lightbulb me-2"></i>Personalized Suggestions
+            </h5>
+
+            {% if answers.water_appearance == 'cloudy' or answers.water_appearance == 'brown_dirty' %}
+            <div class="suggestion-item">
+                <i class="fas fa-tint" style="color:#0d9488; margin-top:2px;"></i>
+                <span><strong>Water Appearance:</strong> Your water looks contaminated. Always boil or filter before drinking. Get it tested at a local lab immediately.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.water_smell == 'rotten_egg' or answers.water_smell == 'metallic' %}
+            <div class="suggestion-item">
+                <i class="fas fa-wind" style="color:#0d9488; margin-top:2px;"></i>
+                <span><strong>Water Smell:</strong> Unusual smell indicates contamination. Contact your local water authority and switch to bottled water temporarily.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.water_source == 'river' or answers.water_source == 'open_well' %}
+            <div class="suggestion-item">
+                <i class="fas fa-faucet" style="color:#0d9488; margin-top:2px;"></i>
+                <span><strong>Water Source:</strong> Your water source is high risk. Always treat water — boil + filter + chlorinate before use.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.boil_water == 'rarely' or answers.boil_water == 'never' %}
+            <div class="suggestion-item">
+                <i class="fas fa-fire" style="color:#0d9488; margin-top:2px;"></i>
+                <span><strong>Boiling:</strong> You should boil water before drinking. Boiling kills 99% of harmful pathogens. Make it a daily habit.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.water_storage == 'open_container' or answers.water_storage == 'old_container' %}
+            <div class="suggestion-item">
+                <i class="fas fa-box" style="color:#0d9488; margin-top:2px;"></i>
+                <span><strong>Storage:</strong> Use clean, closed containers to store water. Open containers attract insects and allow contamination.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.sanitation == 'poor' or answers.sanitation == 'very_poor' %}
+            <div class="suggestion-item">
+                <i class="fas fa-toilet" style="color:#0d9488; margin-top:2px;"></i>
+                <span><strong>Sanitation:</strong> Poor sanitation is the #1 cause of waterborne diseases. Ensure proper waste disposal away from water sources.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.recent_illness == 'moderate' or answers.recent_illness == 'severe' %}
+            <div class="suggestion-item" style="border-left-color:#ef4444; background:#fff5f5;">
+                <i class="fas fa-hospital" style="color:#ef4444; margin-top:2px;"></i>
+                <span><strong>Recent Illness:</strong> You reported recent illness. Please consult a doctor immediately — this could be water-related.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.hand_washing == 'sometimes' or answers.hand_washing == 'rarely' %}
+            <div class="suggestion-item">
+                <i class="fas fa-hands-wash" style="color:#0d9488; margin-top:2px;"></i>
+                <span><strong>Hand Washing:</strong> Wash hands with soap before eating and after using the toilet. This simple habit prevents 50% of waterborne diseases.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.water_treatment == 'nothing' %}
+            <div class="suggestion-item" style="border-left-color:#f59e0b; background:#fffbeb;">
+                <i class="fas fa-filter" style="color:#f59e0b; margin-top:2px;"></i>
+                <span><strong>No Treatment:</strong> You are not treating your water at all. Use at minimum: boiling or a basic filter. Untreated water is the biggest risk factor.</span>
+            </div>
+            {% endif %}
+
+            {% if answers.flooding == 'moderate' or answers.flooding == 'heavy' %}
+            <div class="suggestion-item" style="border-left-color:#3b82f6; background:#eff6ff;">
+                <i class="fas fa-cloud-rain" style="color:#3b82f6; margin-top:2px;"></i>
+                <span><strong>Flooding:</strong> Recent flooding contaminates water sources. Avoid using any local water source for 2 weeks after flooding. Use bottled water.</span>
+            </div>
+            {% endif %}
+
+            <div class="suggestion-item">
+                <i class="fas fa-check-circle" style="color:#0d9488; margin-top:2px;"></i>
+                <span>Get your water tested at a certified lab every 3 months for complete safety assurance.</span>
+            </div>
+            <div class="suggestion-item">
+                <i class="fas fa-check-circle" style="color:#0d9488; margin-top:2px;"></i>
+                <span>Keep children and elderly away from untreated water sources — they are most vulnerable.</span>
+            </div>
+
+            <div class="mt-4 d-flex gap-3 flex-wrap justify-content-center">
+                <a href="/" class="btn" style="background:linear-gradient(105deg,#0f766e,#0d9488); color:white; border-radius:2rem; padding:0.7rem 2rem; font-weight:700; text-decoration:none;">
+                    <i class="fas fa-redo me-2"></i>Take Survey Again
+                </a>
+                <a href="/detailed-analysis/" class="btn" style="background:#f1f5f9; color:#0f766e; border-radius:2rem; padding:0.7rem 2rem; font-weight:700; text-decoration:none; border:1.5px solid #e2e8f0;">
+                    🔬 Detailed Analysis
+                </a>
+                <a href="/alerts/" class="btn" style="background:#f1f5f9; color:#0f766e; border-radius:2rem; padding:0.7rem 2rem; font-weight:700; text-decoration:none; border:1.5px solid #e2e8f0;">
+                    🔔 Register for Alerts
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="sticky-sidebar">
+            <div class="result-card">
+                <h5 class="fw-bold mb-3" style="color:#0f766e;">
+                    <i class="fas fa-history me-2"></i>Your Past Surveys
+                </h5>
+                {% if past_surveys %}
+                    {% for s in past_surveys %}
+                    <div class="past-survey-item">
+                        <div>
+                            <div style="font-weight:600;">{{ s.created_at|date:"M d, Y" }}</div>
+                            <div style="color:#64748b; font-size:0.8rem;">{{ s.created_at|time:"H:i" }}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-weight:700; color:{% if s.risk_level == 'Low Risk' %}#065f46{% elif s.risk_level == 'Moderate Risk' %}#92400e{% elif s.risk_level == 'High Risk' %}#991b1b{% else %}#9d174d{% endif %};">
+                                {{ s.risk_level }}
+                            </span>
+                            <div style="font-size:0.8rem; color:#64748b;">Score: {{ s.score }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted small">No past surveys yet.</p>
                 {% endif %}
             </div>
         </div>
     </div>
+</div>
 
-    <!-- RIGHT: Info Cards -->
-    <div class="col-lg-6">
-        <div class="card main-card p-4 h-100">
-            <div class="card-body p-0">
-                <h4 class="fw-bold mb-3" style="color:#0b5e56;"><i class="fas fa-chart-simple me-2"></i>Why AquaRisk?</h4>
-                <p class="text-secondary">AquaRisk uses advanced machine learning models trained on thousands of water samples and disease outbreak data.</p>
-                <div class="row g-3 mt-2">
-                    <div class="col-6">
-                        <div class="info-icon-box">
-                            <i class="fas fa-droplet fa-2x" style="color:#0f766e;"></i>
-                            <h6 class="fw-bold mt-2">Real-time Risk</h6>
-                            <small>Instant feedback on contamination likelihood</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="info-icon-box">
-                            <i class="fas fa-database fa-2x" style="color:#0f766e;"></i>
-                            <h6 class="fw-bold mt-2">WHO Reference</h6>
-                            <small>Aligned with global water safety guidelines</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="info-icon-box">
-                            <i class="fas fa-chart-line fa-2x" style="color:#0f766e;"></i>
-                            <h6 class="fw-bold mt-2">Disease Mapping</h6>
-                            <small>Cholera, Typhoid, Diarrheal risk prediction</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="info-icon-box">
-                            <i class="fas fa-mobile-alt fa-2x" style="color:#0f766e;"></i>
-                            <h6 class="fw-bold mt-2">Fast & Free</h6>
-                            <small>Instant secure predictions</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-4 pt-2">
-                    <hr class="my-3">
-                    <div class="d-flex justify-content-between flex-wrap gap-2">
-                        <div class="stat-card flex-fill">
-                            <span class="display-6 fw-bold" style="color:#0f766e;">2B+</span>
-                            <p class="small text-muted mb-0">People at risk globally</p>
-                        </div>
-                        <div class="stat-card flex-fill">
-                            <span class="display-6 fw-bold" style="color:#0f766e;">829K</span>
-                            <p class="small text-muted mb-0">Annual deaths from unsafe water</p>
-                        </div>
-                        <div class="stat-card flex-fill">
-                            <span class="display-6 fw-bold" style="color:#0f766e;">99%</span>
-                            <p class="small text-muted mb-0">Pathogen reduction potential</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{% else %}
+<div class="intro-hero">
+    <h1>Test My Water Health Assessment</h1>
+    <p class="lead-text">AquaRisk uses machine learning and health intelligence to instantly assess your water quality risk — helping communities stay safe from Cholera, Typhoid, and other deadly waterborne diseases.</p>
+    
+    <div class="stats-grid">
+        <div class="stat-box">
+            <h3>2B+</h3>
+            <p>People at risk globally</p>
+        </div>
+        <div class="stat-box">
+            <h3>829K</h3>
+            <p>Annual deaths</p>
+        </div>
+        <div class="stat-box">
+            <h3>99%</h3>
+            <p>ML Model Accuracy</p>
+        </div>
+        <div class="stat-box">
+            <h3>3 sec</h3>
+            <p>Instant prediction</p>
         </div>
     </div>
 </div>
 
-<!-- About Section -->
-<div class="row mt-5 g-4" id="about">
-    <div class="col-12">
-        <div class="card main-card p-4">
-            <h3 class="fw-bold" style="color:#115e59;"><i class="fas fa-seedling me-2"></i>About Our Prediction System</h3>
-            <p class="mt-2">AquaRisk combines environmental science with artificial intelligence to provide accessible water disease risk assessment. Our model is trained on historical data from CDC, WHO, and national water quality databases.</p>
-            <div class="row mt-3">
-                <div class="col-md-4"><i class="fas fa-chart-pie text-info me-1"></i> <strong>pH Influence:</strong> Acidic waters corrode pipes; alkaline waters reduce disinfection efficiency.</div>
-                <div class="col-md-4"><i class="fas fa-chart-pie text-info me-1"></i> <strong>Turbidity Impact:</strong> High turbidity shields bacteria from UV/chlorine.</div>
-                <div class="col-md-4"><i class="fas fa-chart-pie text-info me-1"></i> <strong>Temperature Effect:</strong> Warm water accelerates pathogen replication.</div>
-            </div>
+<h2 class="section-title">How AquaRisk Works</h2>
+<p class="text-center text-muted mb-4">Three simple steps to know if your water is safe</p>
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="step-card">
+            <div class="step-icon">💧</div>
+            <h4>1. Enter Water Parameters</h4>
+            <p>Input your water's pH level, turbidity (cloudiness), and temperature — values available from basic water testing kits.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="step-card">
+            <div class="step-icon">🤖</div>
+            <h4>2. AI Analyzes Instantly</h4>
+            <p>Our machine learning model — trained on thousands of water samples — cross-references your inputs with WHO safety guidelines.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="step-card">
+            <div class="step-icon">📋</div>
+            <h4>3. Get Your Risk Report</h4>
+            <p>Receive an instant risk classification — Low, Moderate, High, or Critical — with actionable steps to protect your health.</p>
         </div>
     </div>
 </div>
 
-<!-- Features Section -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card main-card p-4">
-            <div class="text-center mb-3">
-                <span class="badge-soft"><i class="fas fa-star-of-life me-1"></i> Key Advantages</span>
-                <h3 class="fw-bold mt-2">Intelligent features for safer communities</h3>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="d-flex gap-3">
-                        <i class="fas fa-brain fa-2x" style="color:#0f766e;"></i>
-                        <div><strong>AI Classification</strong><br><small>ML model trained on 50k+ water samples.</small></div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-flex gap-3">
-                        <i class="fas fa-chart-simple fa-2x" style="color:#0f766e;"></i>
-                        <div><strong>Risk Categorization</strong><br><small>Low / Moderate / High / Critical risk levels.</small></div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-flex gap-3">
-                        <i class="fas fa-hand-holding-medical fa-2x" style="color:#0f766e;"></i>
-                        <div><strong>Actionable Insights</strong><br><small>Prevention tips & treatment recommendations.</small></div>
-                    </div>
-                </div>
-            </div>
+<h2 class="section-title">Why Choose AquaRisk?</h2>
+<p class="text-center text-muted mb-4">Built with public health experts and WHO guidelines</p>
+<div class="feature-grid">
+    <div class="feature-card">
+        <div class="f-icon">⚡</div>
+        <div>
+            <h5>Instant Results</h5>
+            <p>Get risk assessment in under 3 seconds — no waiting, no lab visits.</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="f-icon">🔬</div>
+        <div>
+            <h5>ML Powered</h5>
+            <p>Random Forest model trained on 50,000+ real water quality samples.</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="f-icon">🌍</div>
+        <div>
+            <h5>WHO Aligned</h5>
+            <p>Risk thresholds based on World Health Organization drinking water standards.</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="f-icon">📊</div>
+        <div>
+            <h5>Full History</h5>
+            <p>Every test is saved — track your water quality trends over time.</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="f-icon">🦠</div>
+        <div>
+            <h5>Disease Mapping</h5>
+            <p>Identifies risk for Cholera, Typhoid, Hepatitis A, E. coli and more.</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="f-icon">🔔</div>
+        <div>
+            <h5>Smart Alerts</h5>
+            <p>Get notified when contamination levels in your area are elevated.</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="f-icon">🤖</div>
+        <div>
+            <h5>AI Chatbot</h5>
+            <p>24/7 health assistant to answer your water safety and disease questions.</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="f-icon">🔒</div>
+        <div>
+            <h5>Secure & Private</h5>
+            <p>Your data is stored securely and never shared with third parties.</p>
         </div>
     </div>
 </div>
 
-<!-- CTA -->
-<div class="row mt-4 mb-2">
-    <div class="col-12">
-        <div class="card main-card p-4" style="background:linear-gradient(115deg,#eef9ff,#e0f2f1);">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h4 class="fw-bold">🌍 Join the movement for clean water</h4>
-                    <p>Help spread awareness. Use AquaRisk for field testing, community monitoring, or personal safety.</p>
-                    <div><i class="fas fa-envelope me-2"></i> support@aquarisk.org &nbsp;&nbsp;<i class="fas fa-phone-alt"></i> +91 81950-34972</div>
+<h2 class="section-title">Waterborne Diseases We Detect Risk For</h2>
+<p class="text-center text-muted mb-3">Based on your water parameters and health symptoms</p>
+<div class="disease-tags">
+    <div class="disease-tag"><span>🦠</span> Cholera</div>
+    <div class="disease-tag"><span>🌡️</span> Typhoid</div>
+    <div class="disease-tag"><span>🫀</span> Hepatitis A</div>
+    <div class="disease-tag"><span>🧫</span> E. coli</div>
+    <div class="disease-tag"><span>💊</span> Dysentery</div>
+    <div class="disease-tag"><span>🔬</span> Giardia</div>
+</div>
+
+<div class="survey-header" id="survey-section">
+    <h2><i class="fas fa-clipboard-list me-2"></i>Water Health Survey 🌊</h2>
+    <p>Answer 15 simple questions about your water and health — get instant safety suggestions</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="progress-bar-custom">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div style="text-align:right; font-size:0.8rem; color:#64748b; margin-top:-1.5rem; margin-bottom:1.5rem;">
+            <span id="progressText">0 of 15 answered</span>
+        </div>
+
+        <div class="survey-card">
+            <form method="POST" action="/" id="surveyForm">
+                {% csrf_token %}
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">1</span>How does your drinking water look?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q1" id="q1a" value="crystal_clear" required><label for="q1a">💎 Crystal clear</label></div>
+                        <div class="option-item"><input type="radio" name="q1" id="q1b" value="slightly_yellow"><label for="q1b">🟡 Slightly yellowish</label></div>
+                        <div class="option-item"><input type="radio" name="q1" id="q1c" value="cloudy"><label for="q1c">☁️ Cloudy / murky</label></div>
+                        <div class="option-item"><input type="radio" name="q1" id="q1d" value="brown_dirty"><label for="q1d">🟤 Brown / dirty</label></div>
+                    </div>
                 </div>
-                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a href="#" class="btn btn-outline-success rounded-pill px-4"><i class="fab fa-github me-1"></i>Contribute</a>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">2</span>How does your water smell?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q2" id="q2a" value="no_smell" required><label for="q2a">✅ No smell</label></div>
+                        <div class="option-item"><input type="radio" name="q2" id="q2b" value="chlorine"><label for="q2b">🧴 Slight chlorine</label></div>
+                        <div class="option-item"><input type="radio" name="q2" id="q2c" value="rotten_egg"><label for="q2c">🥚 Rotten egg</label></div>
+                        <div class="option-item"><input type="radio" name="q2" id="q2d" value="earthy"><label for="q2d">🌿 Earthy / musty</label></div>
+                        <div class="option-item"><input type="radio" name="q2" id="q2e" value="metallic"><label for="q2e">⚗️ Metallic / chemical</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">3</span>What is your main water source?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q3" id="q3a" value="bottled" required><label for="q3a">🍶 Bottled water</label></div>
+                        <div class="option-item"><input type="radio" name="q3" id="q3b" value="municipal"><label for="q3b">🚰 Municipal tap</label></div>
+                        <div class="option-item"><input type="radio" name="q3" id="q3c" value="borewell"><label for="q3c">⛏️ Borewell</label></div>
+                        <div class="option-item"><input type="radio" name="q3" id="q3d" value="open_well"><label for="q3d">🪣 Open well</label></div>
+                        <div class="option-item"><input type="radio" name="q3" id="q3e" value="river"><label for="q3e">🏞️ River / pond</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">4</span>How often do you boil water before drinking?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q4" id="q4a" value="always" required><label for="q4a">✅ Always</label></div>
+                        <div class="option-item"><input type="radio" name="q4" id="q4b" value="sometimes"><label for="q4b">🔄 Sometimes</label></div>
+                        <div class="option-item"><input type="radio" name="q4" id="q4c" value="rarely"><label for="q4c">⚠️ Rarely</label></div>
+                        <div class="option-item"><input type="radio" name="q4" id="q4d" value="never"><label for="q4d">❌ Never</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">5</span>How do you store drinking water at home?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q5" id="q5a" value="closed_clean" required><label for="q5a">✅ Clean closed container</label></div>
+                        <div class="option-item"><input type="radio" name="q5" id="q5b" value="open_container"><label for="q5b">⚠️ Open container</label></div>
+                        <div class="option-item"><input type="radio" name="q5" id="q5c" value="old_container"><label for="q5c">🪣 Old/dirty container</label></div>
+                        <div class="option-item"><input type="radio" name="q5" id="q5d" value="no_storage"><label for="q5d">🚰 Direct from tap</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">6</span>How would you rate sanitation in your area?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q6" id="q6a" value="good" required><label for="q6a">✅ Good</label></div>
+                        <div class="option-item"><input type="radio" name="q6" id="q6b" value="average"><label for="q6b">🔄 Average</label></div>
+                        <div class="option-item"><input type="radio" name="q6" id="q6c" value="poor"><label for="q6c">⚠️ Poor</label></div>
+                        <div class="option-item"><input type="radio" name="q6" id="q6d" value="very_poor"><label for="q6d">🚨 Very poor</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">7</span>Have you or your family had any illness recently?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q7" id="q7a" value="none" required><label for="q7a">✅ None</label></div>
+                        <div class="option-item"><input type="radio" name="q7" id="q7b" value="mild"><label for="q7b">🤧 Mild (cold/cough)</label></div>
+                        <div class="option-item"><input type="radio" name="q7" id="q7c" value="moderate"><label for="q7c">🤢 Moderate (diarrhea/fever)</label></div>
+                        <div class="option-item"><input type="radio" name="q7" id="q7d" value="severe"><label for="q7d">🚨 Severe (hospitalized)</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">8</span>What type of area do you live in?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q8" id="q8a" value="urban" required><label for="q8a">🏙️ Urban city</label></div>
+                        <div class="option-item"><input type="radio" name="q8" id="q8b" value="semi_urban"><label for="q8b">🏘️ Semi-urban</label></div>
+                        <div class="option-item"><input type="radio" name="q8" id="q8c" value="rural"><label for="q8c">🌾 Rural village</label></div>
+                        <div class="option-item"><input type="radio" name="q8" id="q8d" value="slum"><label for="q8d">🏚️ Slum / informal</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">9</span>Is there any industrial/agricultural contamination near your water source?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q9" id="q9a" value="none" required><label for="q9a">✅ None</label></div>
+                        <div class="option-item"><input type="radio" name="q9" id="q9b" value="some"><label for="q9b">⚠️ Some</label></div>
+                        <div class="option-item"><input type="radio" name="q9" id="q9c" value="significant"><label for="q9c">🏭 Significant</label></div>
+                        <div class="option-item"><input type="radio" name="q9" id="q9d" value="severe"><label for="q9d">🚨 Severe</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">10</span>How often do you wash hands before eating?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q10" id="q10a" value="always" required><label for="q10a">✅ Always</label></div>
+                        <div class="option-item"><input type="radio" name="q10" id="q10b" value="usually"><label for="q10b">🔄 Usually</label></div>
+                        <div class="option-item"><input type="radio" name="q10" id="q10c" value="sometimes"><label for="q10c">⚠️ Sometimes</label></div>
+                        <div class="option-item"><input type="radio" name="q10" id="q10d" value="rarely"><label for="q10d">❌ Rarely</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">11</span>Are there children under 5 years in your household?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q11" id="q11a" value="no" required><label for="q11a">❌ No</label></div>
+                        <div class="option-item"><input type="radio" name="q11" id="q11b" value="yes"><label for="q11b">👶 Yes</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">12</span>Are there elderly people (60+) in your household?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q12" id="q12a" value="no" required><label for="q12a">❌ No</label></div>
+                        <div class="option-item"><input type="radio" name="q12" id="q12b" value="yes"><label for="q12b">👴 Yes</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">13</span>Has there been heavy rain or flooding recently in your area?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q13" id="q13a" value="no" required><label for="q13a">✅ No</label></div>
+                        <div class="option-item"><input type="radio" name="q13" id="q13b" value="light"><label for="q13b">🌧️ Light rain</label></div>
+                        <div class="option-item"><input type="radio" name="q13" id="q13c" value="moderate"><label for="q13c">⛈️ Moderate rain</label></div>
+                        <div class="option-item"><input type="radio" name="q13" id="q13d" value="heavy"><label for="q13d">🌊 Heavy flooding</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">14</span>What water treatment method do you use?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q14" id="q14a" value="filter_boil" required><label for="q14a">✅ Filter + Boil</label></div>
+                        <div class="option-item"><input type="radio" name="q14" id="q14b" value="filter_only"><label for="q14b">🔵 Filter only</label></div>
+                        <div class="option-item"><input type="radio" name="q14" id="q14c" value="boil_only"><label for="q14c">🔥 Boil only</label></div>
+                        <div class="option-item"><input type="radio" name="q14" id="q14d" value="chlorine"><label for="q14d">🧪 Chlorine tablets</label></div>
+                        <div class="option-item"><input type="radio" name="q14" id="q14e" value="nothing"><label for="q14e">❌ Nothing</label></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title"><span class="question-number">15</span>Have you ever had a waterborne illness (typhoid, cholera, diarrhea)?</div>
+                    <div class="options-grid">
+                        <div class="option-item"><input type="radio" name="q15" id="q15a" value="never" required><label for="q15a">✅ Never</label></div>
+                        <div class="option-item"><input type="radio" name="q15" id="q15b" value="once"><label for="q15b">1️⃣ Once</label></div>
+                        <div class="option-item"><input type="radio" name="q15" id="q15c" value="twice"><label for="q15c">2️⃣ Twice</label></div>
+                        <div class="option-item"><input type="radio" name="q15" id="q15d" value="multiple"><label for="q15d">🔄 Multiple times</label></div>
+                    </div>
+                </div>
+
+                <div style="padding:1.5rem 2rem;">
+                    <button type="submit" class="btn-submit-survey" id="submitBtn" disabled>
+                        <i class="fas fa-chart-bar me-2"></i>Get My Water Safety Report
+                    </button>
+                    <p class="text-muted small text-center mt-2">Please answer all 15 questions to submit</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="sticky-sidebar">
+            <div class="result-card mb-3">
+                <h5 class="fw-bold mb-3" style="color:#0f766e;">
+                    <i class="fas fa-info-circle me-2"></i>About This Survey
+                </h5>
+                <p class="small text-muted">This 15-question survey evaluates your water safety risk based on WHO guidelines and epidemiological data. Each answer is scored and the total determines your risk level.</p>
+                <hr style="border-color:#e2e8f0;">
+                <div style="font-size:0.85rem;">
+                    <div class="d-flex justify-content-between mb-2"><span>✅ Low Risk</span><span style="color:#065f46; font-weight:600;">0–30 points</span></div>
+                    <div class="d-flex justify-content-between mb-2"><span>⚠️ Moderate Risk</span><span style="color:#92400e; font-weight:600;">31–70 points</span></div>
+                    <div class="d-flex justify-content-between mb-2"><span>🔴 High Risk</span><span style="color:#991b1b; font-weight:600;">71–110 points</span></div>
+                    <div class="d-flex justify-content-between"><span>🚨 Critical Risk</span><span style="color:#9d174d; font-weight:600;">111+ points</span></div>
                 </div>
             </div>
+            {% if past_surveys %}
+            <div class="result-card">
+                <h5 class="fw-bold mb-3" style="color:#0f766e;">
+                    <i class="fas fa-history me-2"></i>Your Past Surveys
+                </h5>
+                {% for s in past_surveys %}
+                <div class="past-survey-item">
+                    <div>
+                        <div style="font-weight:600;">{{ s.created_at|date:"M d, Y" }}</div>
+                        <div style="color:#64748b; font-size:0.8rem;">{{ s.created_at|time:"H:i" }}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="font-weight:700; color:{% if s.risk_level == 'Low Risk' %}#065f46{% elif s.risk_level == 'Moderate Risk' %}#92400e{% elif s.risk_level == 'High Risk' %}#991b1b{% else %}#9d174d{% endif %};">
+                            {{ s.risk_level }}
+                        </span>
+                        <div style="font-size:0.8rem; color:#64748b;">Score: {{ s.score }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
+{% endif %}
 
 {% endblock %}
 
 {% block extra_js %}
 <script>
-(function() {
-    const form = document.getElementById('waterQualityForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            const fields = ['ph','turbidity','temperature'];
-            let valid = true;
-            fields.forEach(name => {
-                const el = form.querySelector(`input[name="${name}"]`);
-                if (!el || el.value.trim() === '' || isNaN(parseFloat(el.value))) {
-                    el && el.classList.add('is-invalid');
-                    valid = false;
-                } else {
-                    el && el.classList.remove('is-invalid');
-                }
-            });
-            if (!valid) {
-                e.preventDefault();
-                alert('⚠️ Please enter valid numeric values for all fields.');
-            }
-        });
-    }
-})();
+var totalQuestions = 15;
+var answered = {};
+document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        answered[this.name] = true;
+        var count = Object.keys(answered).length;
+        var pct   = Math.round((count / totalQuestions) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = count + ' of ' + totalQuestions + ' answered';
+        if (count === totalQuestions) {
+            var btn = document.getElementById('submitBtn');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-chart-bar me-2"></i>Get My Water Safety Report ✅';
+        }
+    });
+});
 </script>
 {% endblock %}

@@ -4,12 +4,9 @@
 
 {% block extra_css %}
 .form-card {
-    max-width: 780px;
-    margin: 1.5rem auto;
-    background: rgba(255,255,255,0.97);
-    padding: 2rem;
-    border-radius: 2rem;
-    box-shadow: 0 12px 28px rgba(0,33,33,0.08);
+    max-width: 820px; margin: 1.5rem auto;
+    background: rgba(255,255,255,0.97); padding: 2rem;
+    border-radius: 2rem; box-shadow: 0 12px 28px rgba(0,33,33,0.08);
     border: 1px solid #e0f2f1;
 }
 .risk-header { text-align: center; margin-bottom: 2rem; }
@@ -19,173 +16,146 @@
     background-clip: text; -webkit-background-clip: text; color: transparent;
 }
 .subhead { text-align: center; color: #2b6e68; font-weight: 500; margin-top: 0.5rem; }
-.input-group-risk { margin-bottom: 1.8rem; display: flex; flex-direction: column; gap: 0.5rem; }
-.input-group-risk label { font-weight: 700; font-size: 0.9rem; color: #115e56; }
-.input-group-risk input {
-    width: 100%; padding: 1rem 1.2rem; font-size: 1rem;
-    border: 2px solid #cbdde1; border-radius: 1.6rem;
-    background: white; transition: all 0.2s; font-weight: 500;
+.section-title { font-weight: 700; font-size: 0.95rem; color: #134e4a; margin-bottom: 0.75rem; margin-top: 1.5rem; }
+.options-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.6rem; margin-bottom: 0.5rem;
 }
-.input-group-risk input:focus {
-    border-color: #14b89c; outline: none;
-    box-shadow: 0 0 0 4px rgba(20,184,156,0.2);
+.option-item { position: relative; }
+.option-item input { display: none; }
+.option-item label {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: #f8faff; border: 1.5px solid #e2e8f0;
+    border-radius: 0.9rem; padding: 0.6rem 1rem;
+    font-size: 0.88rem; font-weight: 500; cursor: pointer;
+    transition: all 0.18s; color: #475569; width: 100%;
 }
-.input-group-risk input::placeholder { color: #9bb7b3; font-weight: 400; }
+.option-item input:checked + label {
+    background: linear-gradient(105deg, #dc2626, #b91c1c);
+    border-color: transparent; color: white;
+    box-shadow: 0 3px 10px rgba(220,38,38,0.3);
+}
+.option-item input[type="radio"]:checked + label {
+    background: linear-gradient(105deg, #0f766e, #0d9488);
+    box-shadow: 0 3px 10px rgba(13,148,136,0.3);
+}
+.option-item label:hover { border-color: #0d9488; color: #0d9488; background: #f0fdf9; }
 .risk-btn {
-    background: linear-gradient(105deg, #1f6e65, #0f9488);
+    background: linear-gradient(105deg, #dc2626, #b91c1c);
     width: 100%; border: none; padding: 1rem;
     font-size: 1.2rem; font-weight: 700; color: white;
-    border-radius: 3rem; display: flex; align-items: center;
-    justify-content: center; gap: 0.6rem; cursor: pointer;
-    transition: all 0.25s; margin-top: 0.8rem;
-    box-shadow: 0 6px 14px rgba(15,110,100,0.3);
+    border-radius: 3rem; cursor: pointer; transition: all 0.25s; margin-top: 1.5rem;
+    box-shadow: 0 6px 14px rgba(220,38,38,0.3);
 }
-.risk-btn:hover { background: linear-gradient(105deg, #0b5950, #0d7c70); transform: translateY(-2px); }
-.result-panel {
-    margin-top: 2rem; background: linear-gradient(115deg, #fef9e8, #f5fefc);
-    border-radius: 1.8rem; padding: 1.8rem; border-left: 8px solid #1e9b8a;
-}
-.result-title { font-size: 1.5rem; font-weight: 700; color: #1a5e57; margin-bottom: 1.2rem; }
-.metric-flex {
-    display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1.5rem;
-    background: #f0fbf9; padding: 1rem 1.2rem; border-radius: 1.5rem;
-}
-.metric-item { flex: 1; min-width: 140px; }
-.metric-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #2c7a6e; }
-.metric-value { font-size: 1.5rem; font-weight: 800; color: #0f4d46; font-family: monospace; }
-.risk-badge { display: inline-block; background: #ecfdf5; padding: 0.5rem 1.2rem; border-radius: 2rem; font-weight: 700; margin-top: 0.5rem; }
-.category-highlight { font-size: 1.5rem; font-weight: 800; background: #d2f0ea; padding: 0.2rem 1rem; border-radius: 2rem; display: inline-block; color: #0c5d54; }
-.risk-details { margin-top: 1.2rem; background: rgba(255,255,255,0.7); padding: 1rem; border-radius: 1.2rem; font-size: 0.9rem; line-height: 1.6; color: #1e5a55; }
-.alert-note { background: #fff3e0; border-radius: 1rem; padding: 0.8rem 1rem; margin-top: 1rem; display: flex; gap: 10px; align-items: center; border-left: 4px solid #f4a261; }
-.info-section { margin-top: 2rem; background: #eef7f5; padding: 1.2rem; border-radius: 1.5rem; display: flex; flex-wrap: wrap; gap: 1.2rem; }
-.info-card-small { flex: 1; background: white; border-radius: 1.2rem; padding: 0.8rem 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.risk-btn:hover { transform: translateY(-2px); }
 {% endblock %}
 
 {% block content %}
 
 <div class="risk-header">
-    <h2>🦠 Disease Risk Detection ⚕️</h2>
-    <div class="subhead">Real-time waterborne pathogen & contamination risk assessment</div>
+    <h2>🦠 Waterborne Disease Risk Checker ⚕️</h2>
+    <div class="subhead">Answer a few simple questions to assess your potential risk based on symptoms and exposure</div>
+</div>
+
+<div class="alert alert-warning text-center mx-auto" style="max-width:780px; border-radius:1rem;">
+    ⚠️ <strong>This is not a medical diagnosis.</strong> Always consult a doctor for confirmation.
 </div>
 
 <div class="form-card">
-    <form method="POST" id="riskForm">
-        {% csrf_token %}
-        <div class="input-group-risk">
-            <label>🧪 pH level <span style="font-weight:400; color:#64748b;">(6.5–8.5 ideal)</span></label>
-            <input type="number" step="any" name="ph" placeholder="e.g., 7.2, 6.8, 8.1" value="{{ request.POST.ph|default:'' }}" required>
-        </div>
-        <div class="input-group-risk">
-            <label>🌊 Turbidity (NTU) <span style="font-weight:400; color:#64748b;">(0–5 safe, >5 risk)</span></label>
-            <input type="number" step="any" name="turbidity" placeholder="e.g., 2.3, 7.8, 12.4" value="{{ request.POST.turbidity|default:'' }}" required>
-        </div>
-        <div class="input-group-risk">
-            <label>🌡️ Temperature (°C) <span style="font-weight:400; color:#64748b;">(pathogen proliferation zone)</span></label>
-            <input type="number" step="any" name="temperature" placeholder="e.g., 22.5, 31.0, 15.3" value="{{ request.POST.temperature|default:'' }}" required>
-        </div>
-        <button type="submit" class="risk-btn">
-            🔍 Analyze & Predict Risk
-        </button>
-    </form>
+<form method="POST">
+{% csrf_token %}
+
+<!-- 1. Symptoms -->
+<div class="section-title">🤒 Symptoms (select all that apply)</div>
+<div class="options-grid">
+    <div class="option-item"><input type="checkbox" name="symptoms" value="diarrhea" id="s1"><label for="s1">🚽 Loose stools</label></div>
+    <div class="option-item"><input type="checkbox" name="symptoms" value="watery_diarrhea" id="s2"><label for="s2">💧 Profuse watery diarrhea</label></div>
+    <div class="option-item"><input type="checkbox" name="symptoms" value="bloody_diarrhea" id="s3"><label for="s3">🩸 Blood in stool</label></div>
+    <div class="option-item"><input type="checkbox" name="symptoms" value="vomiting" id="s4"><label for="s4">🤮 Vomiting</label></div>
+    <div class="option-item"><input type="checkbox" name="symptoms" value="fever" id="s5"><label for="s5">🌡️ High fever</label></div>
+    <div class="option-item"><input type="checkbox" name="symptoms" value="jaundice" id="s6"><label for="s6">🟡 Yellowing of eyes/skin</label></div>
+    <div class="option-item"><input type="checkbox" name="symptoms" value="stomach_cramps" id="s7"><label for="s7">😣 Abdominal cramps</label></div>
+    <div class="option-item"><input type="checkbox" name="symptoms" value="fatigue" id="s8"><label for="s8">😴 Extreme fatigue</label></div>
 </div>
 
-{% if result %}
-<div class="form-card">
-    <div class="result-panel" style="margin-top:0;">
-        <div class="result-title">📋 Prediction Outcome</div>
-        <div class="metric-flex">
-            <div class="metric-item">
-                <div class="metric-label">pH Value</div>
-                <div class="metric-value">{{ request.POST.ph|default:"—" }}</div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-label">Turbidity (NTU)</div>
-                <div class="metric-value">{{ request.POST.turbidity|default:"—" }}</div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-label">Temperature (°C)</div>
-                <div class="metric-value">{{ request.POST.temperature|default:"—" }}</div>
-            </div>
-        </div>
-        <div class="risk-badge">🧬 Risk Index: <strong>{{ result }}</strong></div>
-        <div style="margin-top:1rem;">
-            <span style="font-weight:600;">📌 Category: </span>
-            <span class="category-highlight">{{ category }}</span>
-        </div>
-        <div class="risk-details">
-            <strong>🔬 Detailed Analysis</strong><br>
-            {% if category == "High Risk" %}
-                ⚠️ Immediate action required. Elevated probability of Cholera, Typhoid, Dysentery. Boil water before use, implement filtration.
-            {% elif category == "Moderate Risk" %}
-                ⚠️ Moderate concern. Monitoring recommended. Use basic chlorination or UV treatment.
-            {% elif category == "Low Risk" %}
-                ✅ Acceptable water quality. Low likelihood of acute waterborne disease. Maintain sanitary storage.
-            {% elif category == "Critical Risk" %}
-                🚨 CRITICAL: Severe pathogenic indicators. Do not consume untreated water. Seek alternative sources immediately.
-            {% else %}
-                ℹ️ Further assessment needed based on local microbial standards.
-            {% endif %}
-        </div>
-        <div class="alert-note">
-            <span>💡</span>
-            <span><strong>WHO Reference:</strong> pH 6.5–8.5, Turbidity &lt;5 NTU, Temperature 10–25°C lowers microbial risk.</span>
-        </div>
-    </div>
-</div>
-{% else %}
-<div class="form-card" style="background:#eef2f0;">
-    <div style="display:flex; gap:12px; align-items:center; margin-bottom:1rem;">
-        <span>📘</span>
-        <h3 style="color:#14655b; margin:0;">Water Quality & Disease Risk Factors</h3>
-    </div>
-    <p style="margin-bottom:1rem; color:#475569;">The system evaluates three primary parameters to estimate waterborne disease risk: pH imbalance, turbidity, and temperature — each critical to microbial survival.</p>
-    <div class="info-section">
-        <div class="info-card-small"><strong>🔄 pH Scale</strong><br>Acidic (&lt;6.5): corrosion, metal release. Alkaline (&gt;8.5): reduced disinfection.</div>
-        <div class="info-card-small"><strong>🌪️ Turbidity</strong><br>&gt;5 NTU shields pathogens from UV/chlorine. Linked to gastroenteritis.</div>
-        <div class="info-card-small"><strong>🔥 Temperature</strong><br>25–40°C accelerates bacterial replication. Cooler water reduces risk.</div>
-    </div>
-</div>
-{% endif %}
-
-<div class="form-card">
-    <div style="display:flex; flex-wrap:wrap; gap:1rem;">
-        <div style="background:#f8faff; padding:1rem; border-radius:1.2rem; flex:1;">
-            <strong>🚰 Prevention Tips</strong><br>
-            • Boil water for at least 1 minute.<br>
-            • Use activated carbon + ceramic filters.<br>
-            • Regular testing for coliform bacteria.
-        </div>
-        <div style="background:#f8faff; padding:1rem; border-radius:1.2rem; flex:1;">
-            <strong>📊 Surveillance Data</strong><br>
-            Over 2 billion people use fecally contaminated water sources globally. Our system aligns with SDG 6.
-        </div>
-    </div>
+<!-- 2. Duration -->
+<div class="section-title">⏱️ Duration of illness</div>
+<div class="options-grid">
+    <div class="option-item"><input type="radio" name="duration" value="less_24" required id="d1"><label for="d1">⚡ Sudden (less than 1 day)</label></div>
+    <div class="option-item"><input type="radio" name="duration" value="1_3_days" id="d2"><label for="d2">📅 1–3 days</label></div>
+    <div class="option-item"><input type="radio" name="duration" value="3_7_days" id="d3"><label for="d3">📆 Several days</label></div>
+    <div class="option-item"><input type="radio" name="duration" value="more_week" id="d4"><label for="d4">🗓️ Prolonged (1+ week)</label></div>
 </div>
 
-{% endblock %}
+<!-- 3. Fever pattern -->
+<div class="section-title">🌡️ Fever pattern</div>
+<div class="options-grid">
+    <div class="option-item"><input type="radio" name="fever_pattern" value="none" required id="f1"><label for="f1">No fever</label></div>
+    <div class="option-item"><input type="radio" name="fever_pattern" value="mild" id="f2"><label for="f2">Mild/intermittent</label></div>
+    <div class="option-item"><input type="radio" name="fever_pattern" value="high_constant" id="f3"><label for="f3">Persistent high fever</label></div>
+</div>
 
-{% block extra_js %}
-<script>
-(function() {
-    const form = document.getElementById('riskForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            let valid = true;
-            ['ph','turbidity','temperature'].forEach(name => {
-                const el = form.querySelector(`input[name="${name}"]`);
-                if (!el || el.value.trim() === '' || isNaN(parseFloat(el.value))) {
-                    if (el) el.style.borderColor = '#e11d48';
-                    valid = false;
-                } else {
-                    if (el) el.style.borderColor = '#cbdde1';
-                }
-            });
-            if (!valid) {
-                e.preventDefault();
-                alert('⚠️ Please enter valid numeric values for all fields.');
-            }
-        });
-    }
-})();
-</script>
+<!-- 4. Household spread -->
+<div class="section-title">👨‍👩‍👧 Spread in household</div>
+<div class="options-grid">
+    <div class="option-item"><input type="radio" name="people_affected" value="just_me" required id="p1"><label for="p1">Only me</label></div>
+    <div class="option-item"><input type="radio" name="people_affected" value="2_3_people" id="p2"><label for="p2">Few people</label></div>
+    <div class="option-item"><input type="radio" name="people_affected" value="whole_household" id="p3"><label for="p3">Entire household</label></div>
+</div>
+
+<!-- 5. Water exposure -->
+<div class="section-title">💧 Recent water exposure</div>
+<div class="options-grid">
+    <div class="option-item"><input type="radio" name="after_water" value="yes" required id="aw1"><label for="aw1">After drinking local water</label></div>
+    <div class="option-item"><input type="radio" name="after_water" value="no" id="aw2"><label for="aw2">No relation</label></div>
+    <div class="option-item"><input type="radio" name="after_water" value="unsure" id="aw3"><label for="aw3">Not sure</label></div>
+</div>
+
+<!-- 6. Water source -->
+<div class="section-title">🚰 Primary water source</div>
+<div class="options-grid">
+    <div class="option-item"><input type="radio" name="water_source" value="municipal" required id="ws1"><label for="ws1">Treated municipal supply</label></div>
+    <div class="option-item"><input type="radio" name="water_source" value="borewell" id="ws2"><label for="ws2">Borewell / groundwater</label></div>
+    <div class="option-item"><input type="radio" name="water_source" value="surface" id="ws3"><label for="ws3">River / surface water</label></div>
+</div>
+
+<!-- 7. Boiling/filtering -->
+<div class="section-title">🔥 Water treatment habit</div>
+<div class="options-grid">
+    <div class="option-item"><input type="radio" name="treatment" value="always" required id="t1"><label for="t1">Always treated</label></div>
+    <div class="option-item"><input type="radio" name="treatment" value="sometimes" id="t2"><label for="t2">Sometimes treated</label></div>
+    <div class="option-item"><input type="radio" name="treatment" value="never" id="t3"><label for="t3">Never treated</label></div>
+</div>
+
+<!-- 8. Sanitation -->
+<div class="section-title">🚻 Sanitation conditions</div>
+<div class="options-grid">
+    <div class="option-item"><input type="radio" name="sanitation" value="good" required id="sn1"><label for="sn1">Good hygiene</label></div>
+    <div class="option-item"><input type="radio" name="sanitation" value="average" id="sn2"><label for="sn2">Average</label></div>
+    <div class="option-item"><input type="radio" name="sanitation" value="poor" id="sn3"><label for="sn3">Poor sanitation</label></div>
+</div>
+
+<!-- 9. Age group -->
+<div class="section-title">👤 Age group</div>
+<div class="options-grid">
+    <div class="option-item"><input type="radio" name="age_group" value="child" required id="ag1"><label for="ag1">Child</label></div>
+    <div class="option-item"><input type="radio" name="age_group" value="adult" id="ag2"><label for="ag2">Adult</label></div>
+    <div class="option-item"><input type="radio" name="age_group" value="elderly" id="ag3"><label for="ag3">Elderly</label></div>
+</div>
+
+<!-- 10. Recent events -->
+<div class="section-title">🌧️ Recent environmental events</div>
+<div class="options-grid">
+    <div class="option-item"><input type="checkbox" name="events" value="flooding" id="e1"><label for="e1">Flooding</label></div>
+    <div class="option-item"><input type="checkbox" name="events" value="construction" id="e2"><label for="e2">Construction nearby</label></div>
+    <div class="option-item"><input type="checkbox" name="events" value="none" id="e3"><label for="e3">None</label></div>
+</div>
+
+<button type="submit" class="risk-btn">
+    🔍 Analyze Disease Risk
+</button>
+
+</form>
+</div>
+
 {% endblock %}

@@ -1,292 +1,364 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard | AquaRisk - Water Disease Monitoring{% endblock %}
+{% block title %}Community Dashboard | AquaRisk{% endblock %}
 
 {% block extra_css %}
-.dashboard-header {
-    background: linear-gradient(135deg, #0f766e, #0d9488);
-    border-radius: 1.5rem;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    color: white;
-    text-align: center;
-}
-.dashboard-header h2 { font-size: 2.2rem; font-weight: 700; }
 .stat-card {
-    background: white;
-    border-radius: 1.2rem;
-    padding: 1.5rem;
-    text-align: center;
-    transition: all 0.3s;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    background: white; border-radius: 14px; padding: 1.4rem;
+    text-align: center; border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.25s;
 }
-.stat-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-.stat-icon { font-size: 2.5rem; color: #0f766e; margin-bottom: 1rem; }
-.stat-value { font-size: 2.5rem; font-weight: 800; color: #0f766e; }
-.stat-label { font-size: 0.9rem; color: #64748b; margin-top: 0.5rem; }
-.stat-trend { font-size: 0.8rem; margin-top: 0.5rem; }
-.trend-up { color: #dc2626; }
-.trend-down { color: #10b981; }
+.stat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.1); }
+.stat-icon { font-size: 2rem; color: #0f766e; margin-bottom: 0.6rem; }
+.stat-value { font-size: 2.2rem; font-weight: 800; color: #0f766e; }
+.stat-label { font-size: 0.85rem; color: #64748b; margin-top: 0.3rem; }
 .chart-card {
-    background: white;
-    border-radius: 1.2rem;
-    padding: 1.5rem;
-    height: 100%;
+    background: white; border-radius: 14px; padding: 1.4rem;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: 100%;
 }
-.chart-title { font-weight: 700; color: #0f766e; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; }
-.risk-table-container { background: white; border-radius: 1.2rem; padding: 1.5rem; margin-top: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.risk-table { width: 100%; border-collapse: collapse; }
-.risk-table th, .risk-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
-.risk-table th { background: #f8fafc; font-weight: 700; color: #0f766e; }
-.risk-table tr:hover { background: #f8fafc; }
-.risk-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600; }
-.risk-critical { background: #fee2e2; color: #dc2626; }
-.risk-high { background: #fed7aa; color: #ea580c; }
-.risk-moderate { background: #fef3c7; color: #d97706; }
-.risk-low { background: #d1fae5; color: #059669; }
-.alert-box { background: linear-gradient(135deg, #fef3c7, #fde68a); border-left: 5px solid #f59e0b; border-radius: 1rem; padding: 1.2rem; margin-top: 1.5rem; }
+.chart-title { font-weight: 700; color: #0f766e; margin-bottom: 1rem; font-size: 0.95rem; }
+.risk-badge {
+    display: inline-block; padding: 3px 12px;
+    border-radius: 100px; font-size: 0.78rem; font-weight: 600;
+}
+.risk-NORMAL { background: #d1fae5; color: #059669; }
+.risk-MEDIUM { background: #fef9c3; color: #ca8a04; }
+.risk-HIGH   { background: #ffedd5; color: #ea580c; }
+.risk-SEVERE { background: #fee2e2; color: #dc2626; }
+.section-title {
+    font-size: 1.05rem; font-weight: 700; color: #0f766e;
+    border-left: 4px solid #0d9488; padding-left: 10px;
+    margin-bottom: 1rem; margin-top: 1.8rem;
+}
+.feed-item {
+    padding: 10px 14px; border-bottom: 1px solid #f1f5f9;
+    display: flex; align-items: center; gap: 10px; font-size: 0.88rem;
+}
+.feed-item:last-child { border-bottom: none; }
+.no-data { text-align: center; color: #94a3b8; padding: 2rem; font-size: 0.9rem; }
 {% endblock %}
 
 {% block content %}
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Header -->
-<div class="dashboard-header">
-    <h2><i class="fas fa-chart-line me-2"></i>Water Disease Dashboard 📊</h2>
-    <p>Real-time monitoring of waterborne diseases, high-risk areas, and public health metrics</p>
-    <div class="mt-2">
-        <span class="badge bg-light text-dark me-2"><i class="fas fa-calendar me-1"></i>Last Updated: April 2026</span>
-        <span class="badge bg-light text-dark"><i class="fas fa-database me-1"></i>Live Data Feed</span>
+<div class="rounded-4 text-white text-center p-4 mb-4"
+     style="background: linear-gradient(135deg, #0f766e, #0d9488);">
+  <h3 class="fw-bold mb-1">📊 Community Water Safety Dashboard</h3>
+  <p class="mb-0 opacity-90">Live data from water quality checks submitted by users in your area</p>
+</div>
+
+<!-- Pincode Search -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+  <div class="card-body">
+    <label class="form-label fw-semibold mb-1">🔍 Check your area's current risk</label>
+    <div class="input-group" style="max-width:400px;">
+      <input type="text" id="pincode-search" class="form-control"
+             placeholder="Enter your pincode e.g. 141001" maxlength="6">
+      <button class="btn btn-primary" onclick="searchPincode()">Search</button>
     </div>
+    <div id="pincode-result" class="mt-3" style="display:none"></div>
+  </div>
 </div>
 
 <!-- Stat Cards -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-virus"></i></div>
-            <div class="stat-value">{{ data.total_cases|default:"1,284" }}</div>
-            <div class="stat-label">Total Reported Cases</div>
-            <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> +12% vs last month</div>
-        </div>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fas fa-clipboard-check"></i></div>
+      <div class="stat-value">{{ total_checks }}</div>
+      <div class="stat-label">Total Checks Done</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="stat-value">{{ data.high_risk_areas|default:"23" }}</div>
-            <div class="stat-label">High Risk Areas</div>
-            <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> +3 new this week</div>
-        </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+      <div class="stat-value">{{ today_checks }}</div>
+      <div class="stat-label">Checks Today</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-hospital-user"></i></div>
-            <div class="stat-value">847</div>
-            <div class="stat-label">Active Hospitalizations</div>
-            <div class="stat-trend trend-down"><i class="fas fa-arrow-down"></i> -5% improvement</div>
-        </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fas fa-map-pin"></i></div>
+      <div class="stat-value">{{ pincode_count }}</div>
+      <div class="stat-label">Pincodes Monitored</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-hand-holding-water"></i></div>
-            <div class="stat-value">64%</div>
-            <div class="stat-label">Safe Water Access</div>
-            <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> +2% coverage</div>
-        </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fas fa-bell"></i></div>
+      <div class="stat-value">{{ alerts_sent }}</div>
+      <div class="stat-label">Alerts Sent</div>
     </div>
+  </div>
 </div>
 
-<!-- Charts Row -->
+<!-- Row 1: Donut + Line -->
 <div class="row g-4 mb-4">
-    <div class="col-md-6">
-        <div class="chart-card">
-            <div class="chart-title"><i class="fas fa-chart-line fa-lg"></i>Monthly Disease Cases Trend</div>
-            <canvas id="casesChart" height="250"></canvas>
+  <div class="col-md-4">
+    <div class="chart-card">
+      <div class="chart-title">📊 Risk Level Distribution</div>
+      {% if total_checks > 0 %}
+        <canvas id="riskDonut"></canvas>
+        <div class="mt-3">
+          {% for level, count in risk_counts_raw.items %}
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="risk-badge risk-{{ level }}">{{ level }}</span>
+            <span class="fw-semibold text-muted small">{{ count }}</span>
+          </div>
+          {% endfor %}
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="chart-card">
-            <div class="chart-title"><i class="fas fa-chart-pie fa-lg"></i>Disease Distribution by Type</div>
-            <canvas id="diseaseChart" height="250"></canvas>
+      {% else %}
+        <div class="no-data">📭 No data yet.<br>
+          <a href="/">Start by checking your water →</a>
         </div>
+      {% endif %}
     </div>
+  </div>
+  <div class="col-md-8">
+    <div class="chart-card">
+      <div class="chart-title">📈 7-Day HIGH + SEVERE Reports Trend</div>
+      {% if total_checks > 0 %}
+        <canvas id="trendLine"></canvas>
+        <p class="text-muted small mt-2 mb-0">
+          Rising trend indicates worsening water quality in your community.
+        </p>
+      {% else %}
+        <div class="no-data">📭 Trend will appear after first submissions.</div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
-<!-- Disease Breakdown -->
+<!-- Row 2: Bar + Donut -->
 <div class="row g-4 mb-4">
-    <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-tint"></i></div>
-            <div class="stat-value">156</div>
-            <div class="stat-label">Cholera Cases</div>
-            <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> +8 this month</div>
-        </div>
+  <div class="col-md-8">
+    <div class="chart-card">
+      <div class="chart-title">📍 Reports by Pincode (Top 10)</div>
+      {% if pincode_data %}
+        <canvas id="pincodeBar"></canvas>
+      {% else %}
+        <div class="no-data">📭 No pincode data yet.</div>
+      {% endif %}
     </div>
-    <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-biohazard"></i></div>
-            <div class="stat-value">342</div>
-            <div class="stat-label">Typhoid Cases</div>
-            <div class="stat-trend trend-down"><i class="fas fa-arrow-down"></i> -4% decrease</div>
+  </div>
+  <div class="col-md-4">
+    <div class="chart-card">
+      <div class="chart-title">🔬 Check Type Split</div>
+      {% if total_checks > 0 %}
+        <canvas id="checkTypeDonut"></canvas>
+        <div class="mt-3 text-center small text-muted">
+          <strong class="text-primary">{{ quick_count }}</strong> Quick &nbsp;|&nbsp;
+          <strong style="color:#0d9488">{{ detailed_count }}</strong> Detailed
         </div>
+      {% else %}
+        <div class="no-data">📭 No data yet.</div>
+      {% endif %}
     </div>
-    <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-poop"></i></div>
-            <div class="stat-value">528</div>
-            <div class="stat-label">Diarrheal Diseases</div>
-            <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> +15% increase</div>
-        </div>
-    </div>
+  </div>
 </div>
 
-<!-- Risk Table -->
-<div class="risk-table-container">
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-        <h5 class="fw-bold" style="color:#0f766e;"><i class="fas fa-map-marker-alt me-2"></i>High Risk Areas Monitoring</h5>
-        <span class="badge bg-danger">Active Alert Zones</span>
-    </div>
-    <table class="risk-table">
-        <thead>
-            <tr>
-                <th>Region/District</th>
-                <th>Risk Level</th>
-                <th>Reported Cases</th>
-                <th>Water Quality Index</th>
-                <th>Status</th>
-            </tr>
+<!-- Pincode Risk Table -->
+<div class="section-title">📋 Pincode-wise Community Risk Summary</div>
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+  <div class="card-body p-0">
+    {% if pincode_data %}
+    <div class="table-responsive">
+      <table class="table mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3">Pincode</th>
+            <th>Reports</th>
+            <th>Latest Risk</th>
+            <th>Recommended Action</th>
+          </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><i class="fas fa-city me-2"></i>North District</td>
-                <td><span class="risk-badge risk-critical">Critical</span></td>
-                <td>234</td><td>32/100 (Poor)</td>
-                <td><i class="fas fa-bell text-danger"></i> Emergency Response</td>
-            </tr>
-            <tr>
-                <td><i class="fas fa-tree me-2"></i>East Valley</td>
-                <td><span class="risk-badge risk-high">High</span></td>
-                <td>187</td><td>45/100 (Fair)</td>
-                <td><i class="fas fa-exclamation-triangle text-warning"></i> Monitoring</td>
-            </tr>
-            <tr>
-                <td><i class="fas fa-mountain me-2"></i>West Region</td>
-                <td><span class="risk-badge risk-high">High</span></td>
-                <td>156</td><td>48/100 (Fair)</td>
-                <td><i class="fas fa-exclamation-triangle text-warning"></i> Intervention Needed</td>
-            </tr>
-            <tr>
-                <td><i class="fas fa-water me-2"></i>South Delta</td>
-                <td><span class="risk-badge risk-moderate">Moderate</span></td>
-                <td>89</td><td>61/100 (Average)</td>
-                <td><i class="fas fa-chart-line text-info"></i> Under Observation</td>
-            </tr>
-            <tr>
-                <td><i class="fas fa-building me-2"></i>Central Metro</td>
-                <td><span class="risk-badge risk-moderate">Moderate</span></td>
-                <td>112</td><td>58/100 (Average)</td>
-                <td><i class="fas fa-chart-line text-info"></i> Routine Checks</td>
-            </tr>
+          {% for row in pincode_data %}
+          <tr>
+            <td class="ps-3 fw-semibold">📍 {{ row.pincode }}</td>
+            <td>{{ row.count }}</td>
+            <td><span class="risk-badge risk-{{ row.risk_level }}">{{ row.risk_level }}</span></td>
+            <td>
+              {% if row.risk_level == "SEVERE" %}
+                <span class="text-danger small">🚨 Emergency — do not use water</span>
+              {% elif row.risk_level == "HIGH" %}
+                <span class="text-warning small">⚠️ Boil water before use</span>
+              {% elif row.risk_level == "MEDIUM" %}
+                <span class="text-info small">👀 Monitor closely</span>
+              {% else %}
+                <span class="text-success small">✅ Safe — standard precautions</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
+      </table>
+    </div>
+    {% else %}
+    <div class="no-data py-4">
+      📭 No community data yet.<br>
+      <a href="/" class="btn btn-sm btn-outline-primary mt-2">Be the first to check →</a>
+    </div>
+    {% endif %}
+  </div>
 </div>
 
-<!-- Alert Box -->
-<div class="alert-box">
-    <div class="d-flex align-items-center gap-3 flex-wrap">
-        <i class="fas fa-bell fa-2x" style="color:#ea580c;"></i>
-        <div>
-            <strong>⚠️ Public Health Advisory</strong><br>
-            High risk detected in North and East regions. Residents advised to boil water before consumption. Mobile health units deployed.
-        </div>
-        <div class="ms-auto"><span class="badge bg-danger">Active Alert</span></div>
-    </div>
+<!-- Recent Reports Feed -->
+<div class="section-title">📰 Recent Community Reports</div>
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+  <div class="card-body p-0">
+    {% if recent %}
+      {% for r in recent %}
+      <div class="feed-item">
+        <span class="risk-badge risk-{{ r.risk_level }}">
+          {% if r.risk_level == "SEVERE" %}🔴{% elif r.risk_level == "HIGH" %}🟠{% elif r.risk_level == "MEDIUM" %}🟡{% else %}🟢{% endif %}
+          {{ r.risk_level }}
+        </span>
+        <span>
+          Pincode <strong>{{ r.pincode }}</strong> —
+          {% if r.check_type == 'quick' %}Quick Check{% else %}Detailed Analysis{% endif %}
+          {% if r.summary %} — <span class="text-muted">{{ r.summary|truncatechars:55 }}</span>{% endif %}
+        </span>
+        <span class="ms-auto text-muted text-nowrap">{{ r.created_at|timesince }} ago</span>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="no-data py-4">
+        📭 No reports yet.<br>
+        <a href="/" class="btn btn-sm btn-outline-primary mt-2">Submit first report →</a>
+      </div>
+    {% endif %}
+  </div>
 </div>
 
-<!-- More Charts -->
-<div class="row g-4 mt-2">
-    <div class="col-md-6">
-        <div class="chart-card">
-            <div class="chart-title"><i class="fas fa-chart-bar fa-lg"></i>Water Quality Parameters by Region</div>
-            <canvas id="waterQualityChart" height="200"></canvas>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="chart-card">
-            <div class="chart-title"><i class="fas fa-calendar-week fa-lg"></i>Weekly Case Trends (Last 4 Weeks)</div>
-            <canvas id="weeklyChart" height="200"></canvas>
-        </div>
-    </div>
+<!-- Science note -->
+<div class="alert alert-light border rounded-4 mt-2">
+  <strong>📚 Why this matters:</strong>
+  Rising community reports of HIGH or SEVERE water quality mirror WHO's
+  <strong>EWARN</strong> (Early Warning Alert and Response Network) methodology.
+  Symptom self-reporting typically precedes lab-confirmed outbreaks by
+  <strong>3–5 days</strong> — giving communities a critical head start.
 </div>
 
-<!-- Recommendations -->
-<div class="row g-4 mt-2 mb-2">
-    <div class="col-12">
-        <div class="chart-card">
-            <h5 class="fw-bold mb-3" style="color:#0f766e;"><i class="fas fa-clipboard-list me-2"></i>Public Health Recommendations</h5>
-            <div class="row">
-                <div class="col-md-4"><div class="d-flex gap-2 mb-2"><i class="fas fa-check-circle text-success mt-1"></i><span>Immediate water testing in high-risk zones</span></div></div>
-                <div class="col-md-4"><div class="d-flex gap-2 mb-2"><i class="fas fa-check-circle text-success mt-1"></i><span>Distribute chlorine tablets & ORS packets</span></div></div>
-                <div class="col-md-4"><div class="d-flex gap-2 mb-2"><i class="fas fa-check-circle text-success mt-1"></i><span>Community awareness campaigns</span></div></div>
-                <div class="col-md-4"><div class="d-flex gap-2 mb-2"><i class="fas fa-check-circle text-success mt-1"></i><span>Strengthen surveillance systems</span></div></div>
-                <div class="col-md-4"><div class="d-flex gap-2 mb-2"><i class="fas fa-check-circle text-success mt-1"></i><span>Mobile medical camps in critical areas</span></div></div>
-                <div class="col-md-4"><div class="d-flex gap-2 mb-2"><i class="fas fa-check-circle text-success mt-1"></i><span>Improve sanitation infrastructure</span></div></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% endblock %}
-
-{% block extra_js %}
 <script>
-    new Chart(document.getElementById('casesChart'), {
-        type: 'line',
-        data: {
-            labels: ['Oct','Nov','Dec','Jan','Feb','Mar'],
-            datasets: [{
-                label: 'Reported Cases',
-                data: [1120,1180,1240,1190,1250,1284],
-                borderColor: '#0f766e',
-                backgroundColor: 'rgba(15,118,110,0.1)',
-                tension: 0.4, fill: true,
-                pointBackgroundColor: '#0d9488', pointBorderColor: 'white', pointRadius: 5
-            }]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'top' } } }
-    });
+function searchPincode() {
+  const pin = document.getElementById('pincode-search').value.trim();
+  const div = document.getElementById('pincode-result');
+  if (!pin) { div.style.display = 'none'; return; }
 
-    new Chart(document.getElementById('diseaseChart'), {
-        type: 'pie',
-        data: {
-            labels: ['Diarrheal','Typhoid','Cholera','Hepatitis A','Other'],
-            datasets: [{ data: [528,342,156,98,160], backgroundColor: ['#0f766e','#0d9488','#14b8a6','#5eead4','#99f6e4'], borderWidth: 0 }]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-    });
+  const rows = {{ pincode_data_json|safe }};
+  const found = rows.filter(r => r.pincode === pin);
+  div.style.display = 'block';
 
-    new Chart(document.getElementById('waterQualityChart'), {
-        type: 'bar',
-        data: {
-            labels: ['North','East','West','South','Central'],
-            datasets: [
-                { label: 'pH Level', data: [6.2,6.8,7.1,7.4,7.0], backgroundColor: '#0f766e', borderRadius: 8 },
-                { label: 'Turbidity (NTU)', data: [8.5,6.2,5.8,3.2,4.1], backgroundColor: '#0d9488', borderRadius: 8 }
-            ]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'top' } } }
-    });
+  if (found.length === 0) {
+    div.innerHTML = `<div class="alert alert-info mb-0 rounded-3">
+      📭 No checks recorded for pincode <strong>${pin}</strong> yet.
+      <a href="/">Check your water now →</a></div>`;
+    return;
+  }
 
-    new Chart(document.getElementById('weeklyChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Week 1','Week 2','Week 3','Week 4'],
-            datasets: [{ label: 'New Cases', data: [312,298,345,329], backgroundColor: '#0f766e', borderRadius: 8 }]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'top' } } }
-    });
+  const r = found[0];
+  const colorClass = {NORMAL:'success',MEDIUM:'warning',HIGH:'warning',SEVERE:'danger'}[r.risk_level] || 'secondary';
+  div.innerHTML = `
+    <div class="alert alert-${colorClass} mb-0 rounded-3">
+      <strong>📍 Pincode ${pin}</strong> —
+      <span class="risk-badge risk-${r.risk_level}">${r.risk_level}</span>
+      based on ${r.count} report(s).
+      ${r.risk_level !== 'NORMAL' ?
+        `<a href="/alerts/" class="ms-2 fw-bold">🔔 Register for alerts</a>` : ''}
+    </div>`;
+}
+
+const totalChecks = {{ total_checks }};
+
+if (totalChecks > 0) {
+  const rc = {{ risk_counts|safe }};
+
+  new Chart(document.getElementById('riskDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['NORMAL','MEDIUM','HIGH','SEVERE'],
+      datasets: [{
+        data: [rc.NORMAL||0, rc.MEDIUM||0, rc.HIGH||0, rc.SEVERE||0],
+        backgroundColor: ['#059669','#ca8a04','#ea580c','#dc2626'],
+        borderWidth: 0, hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true, cutout: '65%',
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  new Chart(document.getElementById('trendLine'), {
+    type: 'line',
+    data: {
+      labels: {{ trend_labels|safe }},
+      datasets: [{
+        label: 'HIGH + SEVERE',
+        data: {{ trend_data|safe }},
+        borderColor: '#dc2626',
+        backgroundColor: 'rgba(220,38,38,0.08)',
+        tension: 0.4, fill: true,
+        pointBackgroundColor: '#dc2626',
+        pointBorderColor: 'white',
+        pointRadius: 5, borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f1f5f9' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('checkTypeDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Quick Check','Detailed Analysis'],
+      datasets: [{
+        data: [{{ quick_count }}, {{ detailed_count }}],
+        backgroundColor: ['#3b82f6','#0d9488'],
+        borderWidth: 0, hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true, cutout: '60%',
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+    }
+  });
+}
+
+const pincodeRaw = {{ pincode_data_json|safe }};
+if (pincodeRaw.length > 0) {
+  const cmap = {NORMAL:'#059669',MEDIUM:'#ca8a04',HIGH:'#ea580c',SEVERE:'#dc2626'};
+  new Chart(document.getElementById('pincodeBar'), {
+    type: 'bar',
+    data: {
+      labels: pincodeRaw.map(r => r.pincode),
+      datasets: [{
+        label: 'Reports',
+        data: pincodeRaw.map(r => r.count),
+        backgroundColor: pincodeRaw.map(r => cmap[r.risk_level] || '#64748b'),
+        borderRadius: 8, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f1f5f9' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
 </script>
+
 {% endblock %}
