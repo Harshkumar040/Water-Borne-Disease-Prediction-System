@@ -1,16 +1,21 @@
 """
 Django settings for water_disease_project project.
 """
-
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
-SECRET_KEY = 'django-insecure-kwc2$o)u73#fdf^dt25i3)rh!2(4w9+t-(dv5zv_)^r!dnrn35'
+# SECURITY WARNING: keep the secret key used in production secret!
+# It's best practice to grab this from environment variables in production
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-kwc2$o)u73#fdf^dt25i3)rh!2(4w9+t-(dv5zv_)^r!dnrn35')
 
-DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# Allows Render (or any host) to serve the app. 
+# Once you have a specific Render URL, you can replace '*' with ['your-app-name.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,6 +29,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ADDED: Whitenoise middleware directly below SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,6 +77,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+# ADDED: Where collectstatic will gather all files for production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
