@@ -11,7 +11,7 @@ from main.models import WaterData, ContactQuery, SurveyResult
 from datetime import datetime
 
 # ✅ FIX: Import the chatbot directly — no Flask server needed
-from main.chatbot_health_advisor import HealthAdvisorChatbot
+from chatbot_health_advisor import HealthAdvisorChatbot
 
 # ✅ FIX: Initialize once at module level (not on every request)
 _chatbot_instance = None
