@@ -13,9 +13,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-kwc2$o)u73#fdf^dt25i3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# Allows Render (or any host) to serve the app. 
-# Once you have a specific Render URL, you can replace '*' with ['your-app-name.onrender.com']
-ALLOWED_HOSTS = ['*']
+# Allows Render to serve the app specifically for your domain.
+ALLOWED_HOSTS = ['aquarisk.onrender.com', 'localhost', '127.0.0.1']
+
+# --- ADDED: CSRF SECURITY FOR RENDER ---
+# This explicitly tells Django that form submissions (like your chatbot) 
+# coming from your live Render HTTPS URL are safe and shouldn't be blocked.
+CSRF_TRUSTED_ORIGINS = ['https://aquarisk.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -29,7 +33,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ADDED: Whitenoise middleware directly below SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise middleware directly below SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,7 +81,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-# ADDED: Where collectstatic will gather all files for production
+# Where collectstatic will gather all files for production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
