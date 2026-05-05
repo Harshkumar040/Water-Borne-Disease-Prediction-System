@@ -2,23 +2,17 @@
 Django settings for water_disease_project project.
 """
 import os
+import dj_database_url
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# It's best practice to grab this from environment variables in production
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-kwc2$o)u73#fdf^dt25i3)rh!2(4w9+t-(dv5zv_)^r!dnrn35')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# Allows Render to serve the app specifically for your domain.
 ALLOWED_HOSTS = ['aquarisk.onrender.com', 'localhost', '127.0.0.1']
 
-# --- ADDED: CSRF SECURITY FOR RENDER ---
-# This explicitly tells Django that form submissions (like your chatbot) 
-# coming from your live Render HTTPS URL are safe and shouldn't be blocked.
 CSRF_TRUSTED_ORIGINS = ['https://aquarisk.onrender.com']
 
 INSTALLED_APPS = [
@@ -33,7 +27,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise middleware directly below SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,12 +55,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# ── DATABASE ─────────────────────────────────────────────
+# Uses PostgreSQL on Render (via DATABASE_URL env var)
+# Falls back to local SQLite for development
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -81,17 +85,16 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-# Where collectstatic will gather all files for production
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ── Auth Redirects ──────────────────────────────────────
+# ── Auth Redirects ───────────────────────────────────────
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-# ── Message tag mapping (Bootstrap alert classes) ───────
+# ── Message tag mapping (Bootstrap alert classes) ────────
 from django.contrib.messages import constants as message_constants
 MESSAGE_TAGS = {
     message_constants.DEBUG:   'secondary',
